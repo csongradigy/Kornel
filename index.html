@@ -3,566 +3,599 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="theme-color" content="#111827"/>
-<title>HangPár – Zöngés/Zöngétlen tréner</title>
+<meta name="theme-color" content="#0b1020"/>
+<title>HangPár – helyesírási és diktálási tréner</title>
 <style>
-:root{
-  --bg:#0b1020;
-  --panel:#111827;
-  --panel2:#182235;
-  --text:#f8fafc;
-  --muted:#a8b3c7;
-  --accent:#60a5fa;
-  --good:#34d399;
-  --bad:#fb7185;
-  --warn:#fbbf24;
-  --line:#263247;
-}
+:root{--bg:#0b1020;--panel:#111827;--panel2:#182235;--text:#f8fafc;--muted:#a8b3c7;--accent:#60a5fa;--good:#34d399;--bad:#fb7185;--warn:#fbbf24;--line:#263247}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:linear-gradient(180deg,#0b1020 0%,#111827 100%);
-  color:var(--text);
-  min-height:100vh;
-}
-.app{max-width:680px;margin:auto;padding:18px 14px 38px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-.brand h1{font-size:22px;margin:0;font-weight:800;letter-spacing:.2px}
-.brand p{font-size:13px;margin:3px 0 0;color:var(--muted)}
-.badge{background:#172036;border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:13px;color:#dbeafe}
-.card{
-  background:rgba(17,24,39,.96);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 12px 35px rgba(0,0,0,.18);
-  margin-bottom:14px;
-}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{
-  border:0;border-radius:14px;padding:14px 12px;font-weight:750;font-size:16px;
-  color:white;background:#22304a;cursor:pointer;
-}
-button:active{transform:scale(.985)}
-button.primary{background:var(--accent);color:#071225}
-button.good{background:var(--good);color:#07140e}
-button.bad{background:var(--bad);color:#24070d}
-button.ghost{background:#182235;border:1px solid #2b3b57}
-button.choice{min-height:72px;font-size:25px}
-button.small{font-size:14px;padding:10px 12px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.space{justify-content:space-between}
-h2{font-size:18px;margin:0 0 10px}
-h3{font-size:16px;margin:0 0 8px}
-p{line-height:1.45}
-.muted{color:var(--muted)}
-.big{
-  font-size:34px;font-weight:850;text-align:center;padding:16px 8px;letter-spacing:.5px
-}
-.center{text-align:center}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#0b1020,#111827);color:var(--text);min-height:100vh}
+.app{max-width:700px;margin:auto;padding:16px 12px 38px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand h1{font-size:22px;margin:0;font-weight:850}.brand p{font-size:13px;margin:3px 0 0;color:var(--muted)}
+.badge{background:#172036;border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:13px}
+.card{background:rgba(17,24,39,.98);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 35px rgba(0,0,0,.18);margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}
+.tab{font-size:11px;padding:10px 3px;background:#172036;color:var(--muted);border:0;border-radius:12px;font-weight:750}
+.tab.active{background:#243451;color:#fff;outline:1px solid #3b82f6}
+button{border:0;border-radius:14px;padding:14px 12px;font-weight:750;font-size:16px;color:white;background:#22304a;cursor:pointer}
+button:active{transform:scale(.985)} button:disabled{opacity:.62}
+button.primary{background:var(--accent);color:#071225} button.good{background:var(--good);color:#07140e}
+button.bad{background:var(--bad);color:#24070d} button.ghost{background:#182235;border:1px solid #2b3b57}
+button.choice{min-height:66px;font-size:22px} button.small{font-size:14px;padding:10px 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:1fr;gap:9px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}
+h2{font-size:18px;margin:0 0 10px} h3{font-size:16px;margin:0 0 8px} p{line-height:1.45}.muted{color:var(--muted)}
+.big{font-size:32px;font-weight:850;text-align:center;padding:14px 8px}.center{text-align:center}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{
-  background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center
-}
-.stat b{font-size:22px;display:block}.stat span{font-size:12px;color:var(--muted)}
-.progress{height:10px;background:#0f172a;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-.progress > div{height:100%;width:0;background:var(--accent);transition:width .2s}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
-.tab{font-size:12px;padding:10px 6px;background:#172036;color:var(--muted)}
-.tab.active{background:#243451;color:#fff;border:1px solid #3b82f6}
-.hidden{display:none!important}
-.feedback{
-  margin-top:12px;padding:11px 12px;border-radius:12px;font-weight:700;
-  background:#172036;border:1px solid var(--line)
-}
-.feedback.goodf{border-color:#1f9d73;color:#a7f3d0}
-.feedback.badf{border-color:#c9475c;color:#fecdd3}
-.wordline{font-size:22px;line-height:1.55;text-align:center}
-.token{
-  display:inline-block;margin:5px 3px;padding:9px 11px;border-radius:11px;background:#1a263c;border:1px solid #2d3d58;
-  cursor:pointer
-}
-.token.selected{outline:2px solid var(--accent)}
-.token.correct{background:#0e3b31;border-color:#1f9d73}
-.token.wrong{background:#4a1720;border-color:#c9475c}
+.stat{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}.stat b{font-size:21px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:#0f172a;border-radius:999px;overflow:hidden;border:1px solid var(--line)}.progress>div{height:100%;width:0;background:var(--accent);transition:width .2s}
+.hidden{display:none!important}.feedback{margin-top:12px;padding:11px 12px;border-radius:12px;font-weight:700;background:#172036;border:1px solid var(--line)}
+.feedback.goodf{border-color:#1f9d73;color:#a7f3d0}.feedback.badf{border-color:#c9475c;color:#fecdd3}
+.wordline{font-size:21px;line-height:1.6;text-align:center}.token{display:inline-block;margin:5px 3px;padding:9px 11px;border-radius:11px;background:#1a263c;border:1px solid #2d3d58;cursor:pointer}
+.token.correct{background:#0e3b31;border-color:#1f9d73}.token.wrong{background:#4a1720;border-color:#c9475c}
 .section-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8ea1bf;margin-bottom:8px}
-select{
-  width:100%;background:#0f172a;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px
-}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-footer{font-size:12px;color:#8290a8;text-align:center;margin-top:14px}
-kbd{background:#0f172a;border:1px solid #334155;padding:2px 6px;border-radius:6px}
-.trophy{font-size:48px}
-.list{padding-left:18px;color:#d9e1ef}.list li{margin:6px 0}
+select,input[type="text"]{width:100%;background:#0f172a;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px}
+input[type="text"]{font-size:22px;text-align:center;font-weight:800;letter-spacing:.02em}
+input[type="text"]:focus{outline:2px solid var(--accent);border-color:transparent}
+.attempts{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 .notice{font-size:13px;color:#cbd5e1;background:#0f172a;border-left:3px solid var(--warn);padding:10px 12px;border-radius:10px}
-@media(max-width:420px){
-  .app{padding:12px 10px 30px}
-  .card{padding:14px;border-radius:16px}
-  .big{font-size:30px}
-  button.choice{min-height:68px;font-size:23px}
-}
+.rulebox{background:#101a2d;border:1px solid #293a58;border-radius:14px;padding:12px;margin-top:10px}.rulebox b{color:#bfdbfe}
+.prompt{font-size:20px;line-height:1.5;text-align:center;margin:16px 0 12px}
+.baseword{display:inline-block;padding:5px 9px;border-radius:8px;background:#1d2b44;color:#bfdbfe;font-weight:800}
+.trophy{font-size:48px} footer{font-size:12px;color:#8290a8;text-align:center;margin-top:14px}
+@media(max-width:440px){.tabs{grid-template-columns:repeat(3,1fr)}.tab{font-size:10px}.app{padding:11px 9px 28px}.card{padding:14px}.big{font-size:29px}.choice{font-size:20px!important}}
 </style>
 </head>
 <body>
 <div class="app">
-  <header>
-    <div class="brand">
-      <h1>HangPár</h1>
-      <p>Zöngés–zöngétlen tréner</p>
-    </div>
-    <div class="badge" id="streakBadge">🔥 0 nap</div>
-  </header>
+<header>
+  <div class="brand"><h1>HangPár</h1><p>hallás • olvasás • helyesírás</p></div>
+  <div class="badge" id="streakBadge">🔥 0 nap</div>
+</header>
 
-  <div class="tabs">
-    <button class="tab active" data-screen="home">Kezdőlap</button>
-    <button class="tab" data-screen="sprint">Sprint</button>
-    <button class="tab" data-screen="hunt">Hibavadász</button>
-    <button class="tab" data-screen="stats">Statisztika</button>
+<div class="tabs">
+  <button class="tab active" data-screen="home">Kezdés</button>
+  <button class="tab" data-screen="sprint">Hang</button>
+  <button class="tab" data-screen="hunt">Hiba</button>
+  <button class="tab" data-screen="grade4">4. oszt.</button>
+  <button class="tab" data-screen="dictation">Diktálás</button>
+  <button class="tab" data-screen="stats">Eredmény</button>
+</div>
+
+<section id="home" class="screen">
+ <div class="card">
+  <div class="section-title">Mai edzés</div>
+  <h2>Rövid, mérhető, nem „ovis” gyakorlás</h2>
+  <p class="muted">A program külön követi a hangpárokat és a kiejtéstől eltérő írású szóalakokat.</p>
+  <div class="stats">
+   <div class="stat"><b id="homeToday">0</b><span>mai kérdés</span></div>
+   <div class="stat"><b id="homeAcc">–</b><span>pontosság</span></div>
+   <div class="stat"><b id="homeBest">0</b><span>legjobb nap-sorozat</span></div>
+  </div>
+ </div>
+ <div class="card">
+  <h2>Hangpárok</h2>
+  <select id="pairSelect">
+   <option value="mix">Vegyes</option><option value="p-b">p – b</option><option value="t-d">t – d</option>
+   <option value="k-g">k – g</option><option value="f-v">f – v</option><option value="sz-z">sz – z</option><option value="s-zs">s – zs</option>
+  </select>
+  <div class="grid" style="margin-top:10px">
+   <button class="primary" id="startSprint">⚡ Hangpár sprint</button>
+   <button class="ghost" id="startHunt">🔎 Hibavadászat</button>
+  </div>
+ </div>
+ <div class="card">
+  <div class="section-title">Új modul</div>
+  <h2>4. osztály – nehezebb szóalakok</h2>
+  <p class="muted">Menj, mondd, küldd, nyúlj, építsd, bontsd, halaszd, mondja, tudja, hagyja…</p>
+  <button class="primary" style="width:100%" id="startGrade4Home">✍️ Szóalak-tréning</button>
+ </div>
+
+ <div class="card">
+  <div class="section-title">Új játékmód</div>
+  <h2>Diktálás</h2>
+  <p class="muted">A telefon felolvassa a mondatot, a hiányzó szót pedig billentyűzettel kell beírni. Két próbálkozás van; az elsőre jó megoldást külön méri.</p>
+  <button class="primary" style="width:100%" id="startDictHome">🎧 Diktálás indítása</button>
+ </div>
+ <div class="card">
+  <h2>Heti cél</h2><div class="progress"><div id="weeklyBar"></div></div><p class="muted" id="weeklyText"></p>
+ </div>
+</section>
+
+<section id="sprint" class="screen hidden">
+ <div class="card">
+  <div class="row space"><div><div class="section-title">Hangpár sprint</div><h2 id="sprintPair">Vegyes</h2></div><button class="small ghost" id="sprintExit">Kilépés</button></div>
+  <div class="progress"><div id="sprintBar"></div></div><p class="muted center" id="sprintCount"></p>
+  <div class="center"><button class="primary" id="speakBtn">🔊 Meghallgatom</button></div>
+  <div class="big" id="maskedWord">••••</div><p class="muted center">Melyik hangot hallottad?</p>
+  <div class="grid" id="choiceGrid"></div>
+  <div id="sprintFeedback" class="feedback hidden"></div>
+  <div class="center" style="margin-top:12px"><button class="ghost hidden" id="nextSprint">Következő →</button></div>
+ </div>
+</section>
+
+<section id="hunt" class="screen hidden">
+ <div class="card">
+  <div class="row space"><div><div class="section-title">Hibavadászat</div><h2>Találd meg a hibás szót</h2></div><button class="small ghost" id="huntExit">Kilépés</button></div>
+  <div class="progress"><div id="huntBar"></div></div><p class="muted center" id="huntCount"></p>
+  <p class="muted center">Egy szóban zöngés–zöngétlen csere történt.</p>
+  <div class="wordline" id="sentenceArea"></div>
+  <div id="huntFeedback" class="feedback hidden"></div>
+  <div class="center" style="margin-top:12px"><button class="ghost hidden" id="nextHunt">Következő →</button></div>
+ </div>
+</section>
+
+<section id="grade4" class="screen hidden">
+ <div id="grade4Setup" class="card">
+  <div class="section-title">4. osztályos helyesírás</div>
+  <h2>Kiejtés ≠ mindig írás</h2>
+  <p class="muted">Itt az a cél, hogy a hallott szóalakhoz automatikusan a helyes íráskép kapcsolódjon.</p>
+  <label class="muted">Feladattípus</label>
+  <select id="g4Category">
+   <option value="mix">Vegyes</option>
+   <option value="imperative">Felszólító alakok: menj, mondd, építsd…</option>
+   <option value="analysis">Szóelemzés: mondja, tudja, hagyja…</option>
+   <option value="shortlong">Rövid felszólító alakok: állj, nyúlj, főj…</option>
+  </select>
+  <div class="rulebox">
+   <b>Stratégia:</b> ne azt kérdezze magától, „mit hallok?”, hanem azt is: <b>„mi az alapszó?”</b>
+   Például: <b>mond → mondd</b>, <b>küld → küldd</b>, <b>megy → menj</b>.
+  </div>
+  <button class="primary" style="width:100%;margin-top:12px" id="startGrade4">Indítás – 12 kérdés</button>
+ </div>
+
+ <div id="grade4Game" class="card hidden">
+  <div class="row space"><div><div class="section-title" id="g4CatLabel">Szóalak</div><h2>Válaszd a helyes írásmódot</h2></div><button class="small ghost" id="g4Exit">Kilépés</button></div>
+  <div class="progress"><div id="g4Bar"></div></div><p class="muted center" id="g4Count"></p>
+  <div class="center"><button class="primary" id="g4Speak">🔊 Hallgasd meg</button></div>
+  <div class="prompt" id="g4Prompt"></div>
+  <div class="grid3" id="g4Choices"></div>
+  <div id="g4Feedback" class="feedback hidden"></div>
+  <div id="g4Rule" class="rulebox hidden"></div>
+  <div class="center" style="margin-top:12px"><button class="ghost hidden" id="g4Next">Következő →</button></div>
+ </div>
+</section>
+
+
+<section id="dictation" class="screen hidden">
+ <div id="dictSetup" class="card">
+  <div class="section-title">Diktálás</div>
+  <h2>Hallgasd – gondold végig – írd le</h2>
+  <p class="muted">A böngésző automatikus helyesírás-javítása ki van kapcsolva, hogy valóban a saját megoldás számítson.</p>
+
+  <label class="muted">Szócsoport</label>
+  <select id="dictCategory">
+   <option value="mix">Vegyes</option>
+   <option value="imperative">Felszólító alakok: menj, mondd, küldd…</option>
+   <option value="analysis">Szóelemzés: mondja, tudja, színpad…</option>
+   <option value="pairs">Zöngés–zöngétlen hangpárok</option>
+  </select>
+
+  <label class="muted" style="display:block;margin-top:12px">Nehézség</label>
+  <select id="dictLevel">
+   <option value="frame">Mondatváz látható</option>
+   <option value="audio">Csak hang – nehezebb</option>
+  </select>
+
+  <div class="rulebox">
+   <b>Tipp:</b> ha bizonytalan vagy, ne csak a hangzásra figyelj. Keresd az alapszót is:
+   <b>mond → mondd</b>, <b>tud → tudja</b>, <b>megy → menj</b>.
+  </div>
+  <button class="primary" style="width:100%;margin-top:12px" id="startDict">Indítás – 10 kérdés</button>
+ </div>
+
+ <div id="dictGame" class="card hidden">
+  <div class="row space">
+   <div><div class="section-title" id="dictCatLabel">Diktálás</div><h2>Írd be a hiányzó szót</h2></div>
+   <button class="small ghost" id="dictExit">Kilépés</button>
+  </div>
+  <div class="progress"><div id="dictBar"></div></div>
+  <p class="muted center" id="dictCount"></p>
+
+  <div class="center">
+   <button class="primary" id="dictSpeak">🔊 Mondat meghallgatása</button>
   </div>
 
-  <section id="home" class="screen">
-    <div class="card">
-      <div class="section-title">Mai cél</div>
-      <h2>10 perc. Pontosság előbb, sebesség utána.</h2>
-      <p class="muted">A feladatok rövidek, mérik a reakcióidőt, és külön követik a problémás hangpárokat.</p>
-      <div class="stats">
-        <div class="stat"><b id="homeToday">0</b><span>mai kérdés</span></div>
-        <div class="stat"><b id="homeAcc">–</b><span>pontosság</span></div>
-        <div class="stat"><b id="homeBest">0</b><span>legjobb sorozat</span></div>
-      </div>
-    </div>
+  <div class="prompt" id="dictPrompt"></div>
 
-    <div class="card">
-      <h2>Edzés indítása</h2>
-      <label class="muted" for="pairSelect">Gyakorolt hangpár</label>
-      <select id="pairSelect">
-        <option value="mix">Vegyes</option>
-        <option value="p-b">p – b</option>
-        <option value="t-d">t – d</option>
-        <option value="k-g">k – g</option>
-        <option value="f-v">f – v</option>
-        <option value="sz-z">sz – z</option>
-        <option value="s-zs">s – zs</option>
-      </select>
-      <div class="grid" style="margin-top:10px">
-        <button class="primary" id="startSprint">⚡ Hangpár sprint</button>
-        <button class="ghost" id="startHunt">🔎 Hibavadászat</button>
-      </div>
-      <div class="notice" style="margin-top:12px">
-        A hangos feladatok a telefon beépített magyar beszédhangját használják. Ha furcsán ejt egy szót, ugyanaz a feladat olvasva is megoldható.
-      </div>
-    </div>
+  <input id="dictInput" type="text"
+    inputmode="text"
+    autocomplete="off"
+    autocapitalize="none"
+    autocorrect="off"
+    spellcheck="false"
+    placeholder="Írd ide a szót…"
+    aria-label="Diktált szó">
 
-    <div class="card">
-      <h2>Heti cél</h2>
-      <div class="progress"><div id="weeklyBar"></div></div>
-      <p class="muted" id="weeklyText">0 / 5 edzésnap</p>
-    </div>
-  </section>
+  <div class="attempts" id="dictAttempts">1. próbálkozás</div>
 
-  <section id="sprint" class="screen hidden">
-    <div class="card">
-      <div class="row space">
-        <div>
-          <div class="section-title">Hangpár sprint</div>
-          <h2 id="sprintPair">Vegyes</h2>
-        </div>
-        <button class="small ghost" id="sprintExit">Kilépés</button>
-      </div>
-      <div class="progress"><div id="sprintBar"></div></div>
-      <p class="muted center" id="sprintCount">1 / 12</p>
+  <div class="grid" style="margin-top:10px">
+   <button class="primary" id="dictCheck">Ellenőrzés</button>
+   <button class="ghost" id="dictHint">Segítség</button>
+  </div>
 
-      <div id="listenArea">
-        <div class="center">
-          <button class="primary" id="speakBtn">🔊 Meghallgatom</button>
-        </div>
-        <div class="big" id="maskedWord">••••</div>
-        <p class="muted center">Melyik hangot hallottad?</p>
-        <div class="grid" id="choiceGrid"></div>
-      </div>
+  <div id="dictFeedback" class="feedback hidden"></div>
+  <div id="dictRule" class="rulebox hidden"></div>
+  <div class="center" style="margin-top:12px">
+   <button class="ghost hidden" id="dictNext">Következő →</button>
+  </div>
+ </div>
+</section>
 
-      <div id="sprintFeedback" class="feedback hidden"></div>
-      <div class="center" style="margin-top:12px">
-        <button class="ghost hidden" id="nextSprint">Következő →</button>
-      </div>
-    </div>
-  </section>
+<section id="stats" class="screen hidden">
+ <div class="card">
+  <div class="section-title">Eredmények</div><h2>Hangpárok</h2><div id="pairStats"></div>
+ </div>
+ <div class="card">
+  <h2>4. osztályos szóalakok</h2><div id="g4Stats"></div>
+ </div>
+ <div class="card">
+  <h2>Diktálás</h2><div id="dictStats"></div>
+ </div>
+ <div class="card">
+  <h2>Összesített</h2>
+  <div class="stats"><div class="stat"><b id="totalQ">0</b><span>válasz</span></div><div class="stat"><b id="totalAcc">–</b><span>pontosság</span></div><div class="stat"><b id="avgRt">–</b><span>átl. idő</span></div></div>
+  <button class="bad small" style="margin-top:14px;width:100%" id="resetStats">Statisztika törlése</button>
+ </div>
+</section>
 
-  <section id="hunt" class="screen hidden">
-    <div class="card">
-      <div class="row space">
-        <div>
-          <div class="section-title">Hibavadászat</div>
-          <h2>Találd meg a hibás szót</h2>
-        </div>
-        <button class="small ghost" id="huntExit">Kilépés</button>
-      </div>
-      <div class="progress"><div id="huntBar"></div></div>
-      <p class="muted center" id="huntCount">1 / 10</p>
-      <p class="muted center">Egy szóban zöngés–zöngétlen csere történt.</p>
-      <div class="wordline" id="sentenceArea"></div>
-      <div id="huntFeedback" class="feedback hidden"></div>
-      <div class="center" style="margin-top:12px">
-        <button class="ghost hidden" id="nextHunt">Következő →</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="stats" class="screen hidden">
-    <div class="card">
-      <div class="section-title">Eredmények</div>
-      <h2>Saját hibaprofil</h2>
-      <p class="muted">A rendszer külön számolja, mely hangpárok mennek biztosan és melyeknél kell több gyakorlás.</p>
-      <div id="pairStats"></div>
-    </div>
-    <div class="card">
-      <h2>Összesített teljesítmény</h2>
-      <div class="stats">
-        <div class="stat"><b id="totalQ">0</b><span>válasz</span></div>
-        <div class="stat"><b id="totalAcc">–</b><span>pontosság</span></div>
-        <div class="stat"><b id="avgRt">–</b><span>átl. idő</span></div>
-      </div>
-      <button class="bad small" style="margin-top:14px;width:100%" id="resetStats">Statisztika törlése</button>
-    </div>
-  </section>
-
-  <section id="result" class="screen hidden">
-    <div class="card center">
-      <div class="trophy" id="resultIcon">🏁</div>
-      <h2 id="resultTitle">Edzés kész</h2>
-      <div class="stats">
-        <div class="stat"><b id="resultScore">0/0</b><span>helyes</span></div>
-        <div class="stat"><b id="resultAcc">0%</b><span>pontosság</span></div>
-        <div class="stat"><b id="resultRt">–</b><span>átl. idő</span></div>
-      </div>
-      <p id="resultMsg" class="muted"></p>
-      <button class="primary" id="resultHome">Vissza a kezdőlapra</button>
-    </div>
-  </section>
-
-  <footer>Az alkalmazás gyakorlóeszköz, nem diagnosztikai teszt.</footer>
+<section id="result" class="screen hidden">
+ <div class="card center"><div class="trophy" id="resultIcon">🏁</div><h2 id="resultTitle"></h2>
+  <div class="stats"><div class="stat"><b id="resultScore"></b><span>helyes</span></div><div class="stat"><b id="resultAcc"></b><span>pontosság</span></div><div class="stat"><b id="resultRt"></b><span>átl. idő</span></div></div>
+  <p id="resultMsg" class="muted"></p><button class="primary" id="resultHome">Vissza a kezdőlapra</button>
+ </div>
+</section>
+<footer>Gyakorlóeszköz; a logopédiai fejlesztést nem helyettesíti.</footer>
 </div>
 
 <script>
-const PAIRS = {
-  "p-b": {a:"p", b:"b", words:[
-    ["pad","p"],["papír","p"],["pálya","p"],["pince","p"],["park","p"],["pont","p"],
-    ["bőr","b"],["bolt","b"],["bátor","b"],["bérlet","b"],["boríték","b"],["bunker","b"]
-  ]},
-  "t-d": {a:"t", b:"d", words:[
-    ["térkép","t"],["tanár","t"],["telefon","t"],["torony","t"],["tábor","t"],["titok","t"],
-    ["daru","d"],["doboz","d"],["dinnye","d"],["délután","d"],["dió","d"],["dráma","d"]
-  ]},
-  "k-g": {a:"k", b:"g", words:[
-    ["kapu","k"],["kód","k"],["kerék","k"],["képregény","k"],["kaland","k"],["kocka","k"],
-    ["gép","g"],["gumi","g"],["garázs","g"],["gomb","g"],["gördeszka","g"],["galaxis","g"]
-  ]},
-  "f-v": {a:"f", b:"v", words:[
-    ["film","f"],["falu","f"],["fény","f"],["foci","f"],["feladat","f"],["fórum","f"],
-    ["vonat","v"],["videó","v"],["vihar","v"],["világ","v"],["vonal","v"],["vödör","v"]
-  ]},
-  "sz-z": {a:"sz", b:"z", words:[
-    ["sziget","sz"],["szoba","sz"],["szám","sz"],["szünet","sz"],["szél","sz"],["szint","sz"],
-    ["zebra","z"],["zene","z"],["zöld","z"],["zokni","z"],["zaj","z"],["zóna","z"]
-  ]},
-  "s-zs": {a:"s", b:"zs", words:[
-    ["séta","s"],["sátor","s"],["sárkány","s"],["siker","s"],["síp","s"],["sorozat","s"],
-    ["zsák","zs"],["zsiráf","zs"],["zseni","zs"],["zseb","zs"],["zsúfolt","zs"],["zsömle","zs"]
-  ]}
+const PAIRS={
+"p-b":{a:"p",b:"b",words:[["pad","p"],["papír","p"],["pálya","p"],["pince","p"],["park","p"],["pont","p"],["bőr","b"],["bolt","b"],["bátor","b"],["bérlet","b"],["boríték","b"],["bunker","b"]]},
+"t-d":{a:"t",b:"d",words:[["térkép","t"],["tanár","t"],["telefon","t"],["torony","t"],["tábor","t"],["titok","t"],["daru","d"],["doboz","d"],["dinnye","d"],["délután","d"],["dió","d"],["dráma","d"]]},
+"k-g":{a:"k",b:"g",words:[["kapu","k"],["kód","k"],["kerék","k"],["képregény","k"],["kaland","k"],["kocka","k"],["gép","g"],["gumi","g"],["garázs","g"],["gomb","g"],["gördeszka","g"],["galaxis","g"]]},
+"f-v":{a:"f",b:"v",words:[["film","f"],["falu","f"],["fény","f"],["foci","f"],["feladat","f"],["fórum","f"],["vonat","v"],["videó","v"],["vihar","v"],["világ","v"],["vonal","v"],["vödör","v"]]},
+"sz-z":{a:"sz",b:"z",words:[["sziget","sz"],["szoba","sz"],["szám","sz"],["szünet","sz"],["szél","sz"],["szint","sz"],["zebra","z"],["zene","z"],["zöld","z"],["zokni","z"],["zaj","z"],["zóna","z"]]},
+"s-zs":{a:"s",b:"zs",words:[["séta","s"],["sátor","s"],["sárkány","s"],["siker","s"],["síp","s"],["sorozat","s"],["zsák","zs"],["zsiráf","zs"],["zseni","zs"],["zseb","zs"],["zsúfolt","zs"],["zsömle","zs"]]}
 };
 
-const HUNTS = [
-  {pair:"p-b", good:"A parkban új pályát építettek a gördeszkásoknak.", bad:"A barkban új pályát építettek a gördeszkásoknak.", wrong:"barkban", correct:"parkban"},
-  {pair:"p-b", good:"Bence a boltban vett egy új pendrive-ot.", bad:"Pence a boltban vett egy új pendrive-ot.", wrong:"Pence", correct:"Bence"},
-  {pair:"t-d", good:"Dani délután találkozik a barátaival.", bad:"Tani délután találkozik a barátaival.", wrong:"Tani", correct:"Dani"},
-  {pair:"t-d", good:"A térképen megjelöltük az útvonalat.", bad:"A dérképen megjelöltük az útvonalat.", wrong:"dérképen", correct:"térképen"},
-  {pair:"k-g", good:"A garázs előtt állt egy fekete kerékpár.", bad:"A karázs előtt állt egy fekete kerékpár.", wrong:"karázs", correct:"garázs"},
-  {pair:"k-g", good:"A képernyőn megjelent a játék következő pályája.", bad:"A gépernyőn megjelent a játék következő pályája.", wrong:"gépernyőn", correct:"képernyőn"},
-  {pair:"f-v", good:"A vonat pontosan érkezett az állomásra.", bad:"A fonat pontosan érkezett az állomásra.", wrong:"fonat", correct:"vonat"},
-  {pair:"f-v", good:"A film végén meglepő fordulat következett.", bad:"A vilm végén meglepő fordulat következett.", wrong:"vilm", correct:"film"},
-  {pair:"sz-z", good:"A szünetben mindenki kiment az udvarra.", bad:"A zünetben mindenki kiment az udvarra.", wrong:"zünetben", correct:"szünetben"},
-  {pair:"sz-z", good:"A zene hangosan szólt a fejhallgatóban.", bad:"A szene hangosan szólt a fejhallgatóban.", wrong:"szene", correct:"zene"},
-  {pair:"s-zs", good:"A zsebemben maradt a belépőkártya.", bad:"A sebemben maradt a belépőkártya.", wrong:"sebemben", correct:"zsebemben"},
-  {pair:"s-zs", good:"A sárkány a történet végén eltűnt.", bad:"A zsárkány a történet végén eltűnt.", wrong:"zsárkány", correct:"sárkány"},
-  {pair:"k-g", good:"A kutatócsoport új galaxist vizsgált.", bad:"A gutatócsoport új galaxist vizsgált.", wrong:"gutatócsoport", correct:"kutatócsoport"},
-  {pair:"t-d", good:"A döntő előtt mindenki nagyon figyelt.", bad:"A töntő előtt mindenki nagyon figyelt.", wrong:"töntő", correct:"döntő"},
-  {pair:"p-b", good:"A program néhány másodperc alatt betöltött.", bad:"A brogram néhány másodperc alatt betöltött.", wrong:"brogram", correct:"program"},
-  {pair:"f-v", good:"A feladat megoldásához videót is használhatott.", bad:"A veladat megoldásához videót is használhatott.", wrong:"veladat", correct:"feladat"},
+const HUNTS=[
+{pair:"p-b",bad:"A barkban új pályát építettek a gördeszkásoknak.",wrong:"barkban",correct:"parkban"},
+{pair:"p-b",bad:"Pence a boltban vett egy új pendrive-ot.",wrong:"Pence",correct:"Bence"},
+{pair:"t-d",bad:"Tani délután találkozik a barátaival.",wrong:"Tani",correct:"Dani"},
+{pair:"t-d",bad:"A dérképen megjelöltük az útvonalat.",wrong:"dérképen",correct:"térképen"},
+{pair:"k-g",bad:"A karázs előtt állt egy fekete kerékpár.",wrong:"karázs",correct:"garázs"},
+{pair:"k-g",bad:"A gépernyőn megjelent a játék következő pályája.",wrong:"gépernyőn",correct:"képernyőn"},
+{pair:"f-v",bad:"A fonat pontosan érkezett az állomásra.",wrong:"fonat",correct:"vonat"},
+{pair:"f-v",bad:"A vilm végén meglepő fordulat következett.",wrong:"vilm",correct:"film"},
+{pair:"sz-z",bad:"A zünetben mindenki kiment az udvarra.",wrong:"zünetben",correct:"szünetben"},
+{pair:"sz-z",bad:"A szene hangosan szólt a fejhallgatóban.",wrong:"szene",correct:"zene"},
+{pair:"s-zs",bad:"A sebemben maradt a belépőkártya.",wrong:"sebemben",correct:"zsebemben"},
+{pair:"s-zs",bad:"A zsárkány a történet végén eltűnt.",wrong:"zsárkány",correct:"sárkány"}
 ];
 
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const storeKey = "hangparStatsV1";
-let data = loadData();
-let session = null;
+/* 4. osztályos, kiejtéstől eltérő / felszólító szóalakok */
+const G4=[
+{cat:"imperative",base:"megy",prompt:"___ már be a szobába!",speak:"Menj már be a szobába!",ans:"Menj",opts:["Menj","Meny","Mengy"],rule:"megy → menj. A szóelem és a felszólító alak kapcsolatát kell megjegyezni."},
+{cat:"imperative",base:"mond",prompt:"___ el, mi történt!",speak:"Mondd el, mi történt!",ans:"Mondd",opts:["Mondd","Mond","Mont"],rule:"mond → mondd. A d végű ige rövid felszólító alakjában két d-t írunk."},
+{cat:"imperative",base:"küld",prompt:"___ el nekem a képet!",speak:"Küldd el nekem a képet!",ans:"Küldd",opts:["Küldd","Küld","Kültd"],rule:"küld → küldd. Írásban megmarad a szóelem."},
+{cat:"imperative",base:"ad",prompt:"___ ide a tollat!",speak:"Add ide a tollat!",ans:"Add",opts:["Add","Ad","Aggy"],rule:"ad → add. Ne a kiejtést írd le, hanem keresd meg az alapszót."},
+{cat:"imperative",base:"hagy",prompt:"___ most békén!",speak:"Hagyj most békén!",ans:"Hagyj",opts:["Hagyj","Haggy","Hadj"],rule:"hagy → hagyj. A felszólító mód jele j."},
+{cat:"imperative",base:"marad",prompt:"___ még öt percig!",speak:"Maradj még öt percig!",ans:"Maradj",opts:["Maradj","Maragy","Maratty"],rule:"marad → maradj. A leírt alak őrzi az alapszó d-jét."},
+{cat:"imperative",base:"épít",prompt:"___ meg a pályát!",speak:"Építsd meg a pályát!",ans:"Építsd",opts:["Építsd","Építs","Épícsd"],rule:"épít → építsd. Az -ít végű igék ilyen rövid alakja külön figyelmet igényel."},
+{cat:"imperative",base:"fordít",prompt:"___ meg a lapot!",speak:"Fordítsd meg a lapot!",ans:"Fordítsd",opts:["Fordítsd","Fordízd","Fordíts"],rule:"fordít → fordítsd."},
+{cat:"imperative",base:"tanít",prompt:"___ meg neki a szabályt!",speak:"Tanítsd meg neki a szabályt!",ans:"Tanítsd",opts:["Tanítsd","Tanícsd","Taníts"],rule:"tanít → tanítsd."},
+{cat:"imperative",base:"bont",prompt:"___ ki a csomagot!",speak:"Bontsd ki a csomagot!",ans:"Bontsd",opts:["Bontsd","Boncsd","Bonts"],rule:"bont → bontsd. A kiejtés és az írás eltérhet."},
+{cat:"imperative",base:"bánt",prompt:"Ne ___ a kutyát!",speak:"Ne bántsd a kutyát!",ans:"bántsd",opts:["bántsd","báncsd","bánts"],rule:"bánt → bántsd."},
+{cat:"imperative",base:"halaszt",prompt:"Ne ___ holnapra!",speak:"Ne halaszd holnapra!",ans:"halaszd",opts:["halaszd","halasszd","halazd"],rule:"halaszt → halaszd. A rövid alakban az íráskép megváltozik."},
+{cat:"imperative",base:"fest",prompt:"___ kékre a falat!",speak:"Fesd kékre a falat!",ans:"Fesd",opts:["Fesd","Fessd","Fezd"],rule:"fest → fesd. Rövid felszólító alak."},
+{cat:"imperative",base:"választ",prompt:"___ ki a helyes választ!",speak:"Válaszd ki a helyes választ!",ans:"Válaszd",opts:["Válaszd","Válasszd","Válazd"],rule:"választ → válaszd."},
 
-function todayKey(){
-  const d=new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function loadData(){
-  try{
-    return JSON.parse(localStorage.getItem(storeKey)) || {
-      total:0, correct:0, rtSum:0, bestStreak:0, currentStreak:0,
-      pair:{}, days:{}, lastDay:null
-    };
-  }catch(e){return {total:0,correct:0,rtSum:0,bestStreak:0,currentStreak:0,pair:{},days:{},lastDay:null}}
-}
-function saveData(){localStorage.setItem(storeKey,JSON.stringify(data));}
-function ensurePair(p){
-  if(!data.pair[p]) data.pair[p]={total:0,correct:0,rtSum:0};
-}
-function record(pair, correct, rt){
-  data.total++;
-  if(correct) data.correct++;
-  data.rtSum += rt || 0;
-  ensurePair(pair);
-  data.pair[pair].total++;
-  if(correct) data.pair[pair].correct++;
-  data.pair[pair].rtSum += rt || 0;
-  const t=todayKey();
-  if(!data.days[t]) data.days[t]={q:0, correct:0};
-  data.days[t].q++;
-  if(correct) data.days[t].correct++;
-  saveData();
-}
+{cat:"shortlong",base:"áll",prompt:"___ meg egy pillanatra!",speak:"Állj meg egy pillanatra!",ans:"Állj",opts:["Állj","Álj","Ájj"],rule:"áll → állj. A hosszú l megmarad, a j rövid."},
+{cat:"shortlong",base:"nyúl",prompt:"Ne ___ hozzá!",speak:"Ne nyúlj hozzá!",ans:"nyúlj",opts:["nyúlj","nyully","nyújj"],rule:"nyúl → nyúlj."},
+{cat:"shortlong",base:"ül",prompt:"___ le mellém!",speak:"Ülj le mellém!",ans:"Ülj",opts:["Ülj","Üjj","Üly"],rule:"ül → ülj."},
+{cat:"shortlong",base:"indul",prompt:"___ el időben!",speak:"Indulj el időben!",ans:"Indulj",opts:["Indulj","Indujj","Induly"],rule:"indul → indulj."},
+{cat:"shortlong",base:"fordul",prompt:"___ balra!",speak:"Fordulj balra!",ans:"Fordulj",opts:["Fordulj","Fordujj","Forduly"],rule:"fordul → fordulj."},
+{cat:"shortlong",base:"figyel",prompt:"___ jobban!",speak:"Figyelj jobban!",ans:"Figyelj",opts:["Figyelj","Figyejj","Figyely"],rule:"figyel → figyelj."},
+{cat:"shortlong",base:"fő",prompt:"___ még öt percig!",speak:"Főj még öt percig!",ans:"Főj",opts:["Főj","Főjj","Föj"],rule:"fő → főj. Hosszú magánhangzó után is csak egy j-t írunk."},
+{cat:"shortlong",base:"lő",prompt:"___ a célra!",speak:"Lőj a célra!",ans:"Lőj",opts:["Lőj","Lőjj","Löj"],rule:"lő → lőj."},
+{cat:"shortlong",base:"nő",prompt:"___ nagyra!",speak:"Nőj nagyra!",ans:"Nőj",opts:["Nőj","Nőjj","Nöj"],rule:"nő → nőj."},
+{cat:"shortlong",base:"sző",prompt:"___ még egy sort!",speak:"Szőj még egy sort!",ans:"Szőj",opts:["Szőj","Szőjj","Szöj"],rule:"sző → szőj."},
+{cat:"shortlong",base:"ró",prompt:"___ még egy kört!",speak:"Rój még egy kört!",ans:"Rój",opts:["Rój","Rójj","Roj"],rule:"ró → rój."},
 
-function markTrainingDay(){
-  const t=todayKey();
-  if(!data.days[t]) data.days[t]={q:0,correct:0};
-  updateDayStreak();
-  saveData();
-}
-function updateDayStreak(){
-  const dates = Object.keys(data.days).filter(d=>data.days[d].q>=5).sort();
-  if(!dates.length){data.currentStreak=0;return}
-  let streak=0;
-  let d=new Date(todayKey()+"T12:00:00");
-  for(let i=0;i<365;i++){
-    const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    if(data.days[k] && data.days[k].q>=5){streak++; d.setDate(d.getDate()-1)}
-    else if(i===0){d.setDate(d.getDate()-1); continue}
-    else break;
-  }
-  data.currentStreak=streak;
-  if(streak>data.bestStreak)data.bestStreak=streak;
-}
+{cat:"analysis",base:"mond",prompt:"Apa azt ___, hogy induljunk.",speak:"Apa azt mondja, hogy induljunk.",ans:"mondja",opts:["mondja","mongya","montya"],rule:"mond + ja → mondja. A szóelemzés elve segít."},
+{cat:"analysis",base:"tud",prompt:"Ő már ___ a választ.",speak:"Ő már tudja a választ.",ans:"tudja",opts:["tudja","tugya","tutya"],rule:"tud + ja → tudja."},
+{cat:"analysis",base:"ad",prompt:"Bence oda___ a könyvet.",speak:"Bence odaadja a könyvet.",ans:"adja",opts:["adja","aggya","atya"],rule:"ad + ja → adja."},
+{cat:"analysis",base:"lát",prompt:"Anna jól ___ a táblát.",speak:"Anna jól látja a táblát.",ans:"látja",opts:["látja","láttya","lácsa"],rule:"lát + ja → látja."},
+{cat:"analysis",base:"hagy",prompt:"Anya ___, hogy befejezzem.",speak:"Anya hagyja, hogy befejezzem.",ans:"hagyja",opts:["hagyja","haggya","hadja"],rule:"hagy + ja → hagyja."},
+{cat:"analysis",base:"hall",prompt:"A zenét mindenki ___ .",speak:"A zenét mindenki hallja.",ans:"hallja",opts:["hallja","hajja","halja"],rule:"hall + ja → hallja. Az alapszó hosszú l-je megmarad."},
+{cat:"analysis",base:"pont",prompt:"A feladat első ___ nehéz.",speak:"A feladat első pontja nehéz.",ans:"pontja",opts:["pontja","pontya","poncsa"],rule:"pont + ja → pontja."},
+{cat:"analysis",base:"barát",prompt:"Ő Péter legjobb ___ .",speak:"Ő Péter legjobb barátja.",ans:"barátja",opts:["barátja","baráttya","barátya"],rule:"barát + ja → barátja."},
+{cat:"analysis",base:"anya",prompt:"A fiú ___ érte jött.",speak:"A fiú anyja érte jött.",ans:"anyja",opts:["anyja","annya","anya"],rule:"anya → anyja. Írásban y+j betűkapcsolat jelenik meg."},
+{cat:"analysis",base:"szín + pad",prompt:"A színész kilépett a ___ közepére.",speak:"A színész kilépett a színpad közepére.",ans:"színpad",opts:["színpad","szímpad","szinpad"],rule:"szín + pad → színpad. A kiejtésben hasonulhat, írásban az összetétel tagjait őrizzük."},
+{cat:"analysis",base:"azon + ban",prompt:"Elindult, ___ hamar visszajött.",speak:"Elindult, azonban hamar visszajött.",ans:"azonban",opts:["azonban","azomban","azon ban"],rule:"azon + ban → azonban."},
+{cat:"analysis",base:"mond",prompt:"Tegnap is ezt ___ nekem.",speak:"Tegnap is ezt mondta nekem.",ans:"mondta",opts:["mondta","monta","montta"],rule:"mond + ta → mondta. Írásban a d megmarad."},
+{cat:"analysis",base:"rajz + szeg",prompt:"A papírt egy ___ tartotta.",speak:"A papírt egy rajzszeg tartotta.",ans:"rajzszeg",opts:["rajzszeg","rajszeg","rajsszeg"],rule:"rajz + szeg → rajzszeg."},
+{cat:"analysis",base:"rend + tartás",prompt:"A versenyen fontos a ___ .",speak:"A versenyen fontos a rendtartás.",ans:"rendtartás",opts:["rendtartás","rentartás","rendtarttás"],rule:"rend + tartás → rendtartás."}
+];
 
+
+const DICT=[
+/* felszólító alakok */
+{cat:"imperative",target:"menj",base:"megy",frame:"___ már be a szobába!",audio:"Menj már be a szobába!",rule:"megy → menj. A felszólító alakot nem a puszta hangzás alapján írjuk."},
+{cat:"imperative",target:"mondd",base:"mond",frame:"___ el, mi történt!",audio:"Mondd el, mi történt!",rule:"mond → mondd. A d végű ige rövid felszólító alakjában két d-t írunk."},
+{cat:"imperative",target:"küldd",base:"küld",frame:"___ el nekem a képet!",audio:"Küldd el nekem a képet!",rule:"küld → küldd. Írásban megmarad a szóelem."},
+{cat:"imperative",target:"add",base:"ad",frame:"___ ide a tollat!",audio:"Add ide a tollat!",rule:"ad → add."},
+{cat:"imperative",target:"hagyj",base:"hagy",frame:"___ most békén!",audio:"Hagyj most békén!",rule:"hagy → hagyj. A felszólító mód jele j."},
+{cat:"imperative",target:"maradj",base:"marad",frame:"___ még öt percig!",audio:"Maradj még öt percig!",rule:"marad → maradj. Az írás őrzi az alapszó d-jét."},
+{cat:"imperative",target:"építsd",base:"épít",frame:"___ meg a pályát!",audio:"Építsd meg a pályát!",rule:"épít → építsd."},
+{cat:"imperative",target:"fordítsd",base:"fordít",frame:"___ meg a lapot!",audio:"Fordítsd meg a lapot!",rule:"fordít → fordítsd."},
+{cat:"imperative",target:"tanítsd",base:"tanít",frame:"___ meg neki a szabályt!",audio:"Tanítsd meg neki a szabályt!",rule:"tanít → tanítsd."},
+{cat:"imperative",target:"bontsd",base:"bont",frame:"___ ki a csomagot!",audio:"Bontsd ki a csomagot!",rule:"bont → bontsd. A kiejtésben és az írásban eltérés lehet."},
+{cat:"imperative",target:"bántsd",base:"bánt",frame:"Ne ___ a kutyát!",audio:"Ne bántsd a kutyát!",rule:"bánt → bántsd."},
+{cat:"imperative",target:"halaszd",base:"halaszt",frame:"Ne ___ holnapra!",audio:"Ne halaszd holnapra!",rule:"halaszt → halaszd."},
+{cat:"imperative",target:"fesd",base:"fest",frame:"___ kékre a falat!",audio:"Fesd kékre a falat!",rule:"fest → fesd."},
+{cat:"imperative",target:"válaszd",base:"választ",frame:"___ ki a helyes választ!",audio:"Válaszd ki a helyes választ!",rule:"választ → válaszd."},
+{cat:"imperative",target:"állj",base:"áll",frame:"___ meg egy pillanatra!",audio:"Állj meg egy pillanatra!",rule:"áll → állj. A hosszú l megmarad."},
+{cat:"imperative",target:"nyúlj",base:"nyúl",frame:"Ne ___ hozzá!",audio:"Ne nyúlj hozzá!",rule:"nyúl → nyúlj."},
+{cat:"imperative",target:"figyelj",base:"figyel",frame:"___ jobban!",audio:"Figyelj jobban!",rule:"figyel → figyelj."},
+{cat:"imperative",target:"főj",base:"fő",frame:"___ még öt percig!",audio:"Főj még öt percig!",rule:"fő → főj. Hosszú magánhangzó után egy j."},
+{cat:"imperative",target:"lőj",base:"lő",frame:"___ a célra!",audio:"Lőj a célra!",rule:"lő → lőj."},
+{cat:"imperative",target:"nőj",base:"nő",frame:"___ nagyra!",audio:"Nőj nagyra!",rule:"nő → nőj."},
+
+/* szóelemzés */
+{cat:"analysis",target:"mondja",base:"mond",frame:"Apa azt ___, hogy induljunk.",audio:"Apa azt mondja, hogy induljunk.",rule:"mond + ja → mondja."},
+{cat:"analysis",target:"tudja",base:"tud",frame:"Ő már ___ a választ.",audio:"Ő már tudja a választ.",rule:"tud + ja → tudja."},
+{cat:"analysis",target:"adja",base:"ad",frame:"Bence oda___ a könyvet.",audio:"Bence odaadja a könyvet.",rule:"ad + ja → adja."},
+{cat:"analysis",target:"látja",base:"lát",frame:"Anna jól ___ a táblát.",audio:"Anna jól látja a táblát.",rule:"lát + ja → látja."},
+{cat:"analysis",target:"hagyja",base:"hagy",frame:"Anya ___, hogy befejezzem.",audio:"Anya hagyja, hogy befejezzem.",rule:"hagy + ja → hagyja."},
+{cat:"analysis",target:"hallja",base:"hall",frame:"A zenét mindenki ___.",audio:"A zenét mindenki hallja.",rule:"hall + ja → hallja. A hosszú l megmarad."},
+{cat:"analysis",target:"pontja",base:"pont",frame:"A feladat első ___ nehéz.",audio:"A feladat első pontja nehéz.",rule:"pont + ja → pontja."},
+{cat:"analysis",target:"barátja",base:"barát",frame:"Ő Péter legjobb ___.",audio:"Ő Péter legjobb barátja.",rule:"barát + ja → barátja."},
+{cat:"analysis",target:"anyja",base:"anya",frame:"A fiú ___ érte jött.",audio:"A fiú anyja érte jött.",rule:"anya → anyja."},
+{cat:"analysis",target:"színpad",base:"szín + pad",frame:"A színész kilépett a ___ közepére.",audio:"A színész kilépett a színpad közepére.",rule:"szín + pad → színpad. Írásban az összetétel tagjai megmaradnak."},
+{cat:"analysis",target:"azonban",base:"azon + ban",frame:"Elindult, ___ hamar visszajött.",audio:"Elindult, azonban hamar visszajött.",rule:"azon + ban → azonban."},
+{cat:"analysis",target:"mondta",base:"mond",frame:"Tegnap is ezt ___ nekem.",audio:"Tegnap is ezt mondta nekem.",rule:"mond + ta → mondta. A d írásban megmarad."},
+{cat:"analysis",target:"rajzszeg",base:"rajz + szeg",frame:"A papírt egy ___ tartotta.",audio:"A papírt egy rajzszeg tartotta.",rule:"rajz + szeg → rajzszeg."},
+{cat:"analysis",target:"rendtartás",base:"rend + tartás",frame:"A versenyen fontos a ___.",audio:"A versenyen fontos a rendtartás.",rule:"rend + tartás → rendtartás."},
+
+/* zöngés–zöngétlen fókusz */
+{cat:"pairs",target:"parkban",base:"park",frame:"A ___ új pályát építettek.",audio:"A parkban új pályát építettek.",rule:"park → parkban. Figyelj a p–b különbségre."},
+{cat:"pairs",target:"Bence",base:"Bence",frame:"___ a boltban vett egy pendrive-ot.",audio:"Bence a boltban vett egy pendrive-ot.",rule:"Bence: szó elején b hangot írunk."},
+{cat:"pairs",target:"térképen",base:"térkép",frame:"A ___ megjelöltük az útvonalat.",audio:"A térképen megjelöltük az útvonalat.",rule:"térkép → térképen. t–d megkülönböztetés."},
+{cat:"pairs",target:"délután",base:"dél",frame:"Dani ___ találkozik a barátaival.",audio:"Dani délután találkozik a barátaival.",rule:"délután: szó elején d."},
+{cat:"pairs",target:"garázs",base:"garázs",frame:"A ___ előtt állt a kerékpár.",audio:"A garázs előtt állt a kerékpár.",rule:"garázs: g–k megkülönböztetés."},
+{cat:"pairs",target:"képernyőn",base:"képernyő",frame:"A ___ megjelent a következő pálya.",audio:"A képernyőn megjelent a következő pálya.",rule:"képernyő: k–g megkülönböztetés."},
+{cat:"pairs",target:"vonat",base:"vonat",frame:"A ___ pontosan érkezett.",audio:"A vonat pontosan érkezett.",rule:"vonat: v–f megkülönböztetés."},
+{cat:"pairs",target:"film",base:"film",frame:"A ___ végén meglepő fordulat jött.",audio:"A film végén meglepő fordulat jött.",rule:"film: f–v megkülönböztetés."},
+{cat:"pairs",target:"szünetben",base:"szünet",frame:"A ___ mindenki kiment.",audio:"A szünetben mindenki kiment.",rule:"szünet: sz–z megkülönböztetés."},
+{cat:"pairs",target:"zene",base:"zene",frame:"A ___ hangosan szólt.",audio:"A zene hangosan szólt.",rule:"zene: z–sz megkülönböztetés."},
+{cat:"pairs",target:"zsebemben",base:"zseb",frame:"A kártya a ___ maradt.",audio:"A kártya a zsebemben maradt.",rule:"zseb: zs–s megkülönböztetés."},
+{cat:"pairs",target:"sárkány",base:"sárkány",frame:"A ___ eltűnt a történet végén.",audio:"A sárkány eltűnt a történet végén.",rule:"sárkány: s–zs megkülönböztetés."}
+];
+
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORE="hangparStatsV2";
+let data=load(),session=null;
+if(!data.pair)data.pair={};
+if(!data.g4)data.g4={};
+if(!data.dict)data.dict={};
+if(!data.days)data.days={};
+if(data.total==null)data.total=0;
+if(data.correct==null)data.correct=0;
+if(data.rtSum==null)data.rtSum=0;
+function load(){try{return JSON.parse(localStorage.getItem(STORE))||{total:0,correct:0,rtSum:0,bestStreak:0,currentStreak:0,pair:{},g4:{},days:{}}}catch(e){return{total:0,correct:0,rtSum:0,bestStreak:0,currentStreak:0,pair:{},g4:{},days:{}}}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data))}
+function keyToday(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function shuffle(a){return a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function labelPair(p){return p==="mix"?"Vegyes":p.replace("-"," – ")}
+function speak(text){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang="hu-HU";u.rate=.82;let vs=speechSynthesis.getVoices(),hu=vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith("hu"));if(hu)u.voice=hu;speechSynthesis.speak(u)}
+function record(kind,id,ok,rt){
+ data.total++;if(ok)data.correct++;data.rtSum+=rt||0;
+ let box=kind==="pair"?data.pair:data.g4;if(!box[id])box[id]={total:0,correct:0,rtSum:0};box[id].total++;if(ok)box[id].correct++;box[id].rtSum+=rt||0;
+ let k=keyToday();if(!data.days[k])data.days[k]={q:0,correct:0};data.days[k].q++;if(ok)data.days[k].correct++;save()
+}
+function updateStreak(){
+ let streak=0,d=new Date(keyToday()+"T12:00:00");
+ for(let i=0;i<365;i++){let k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(data.days[k]?.q>=5){streak++;d.setDate(d.getDate()-1)}else if(i===0){d.setDate(d.getDate()-1)}else break}
+ data.currentStreak=streak;data.bestStreak=Math.max(data.bestStreak||0,streak);save()
+}
 function switchScreen(id){
-  $$(".screen").forEach(x=>x.classList.add("hidden"));
-  $("#"+id).classList.remove("hidden");
-  $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.screen===id));
-  if(id==="home")renderHome();
-  if(id==="stats")renderStats();
-  window.scrollTo({top:0,behavior:"smooth"});
+ $$(".screen").forEach(x=>x.classList.add("hidden"));$("#"+id).classList.remove("hidden");
+ $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.screen===id));
+ if(id==="home")renderHome();if(id==="stats")renderStats();if(id==="grade4"){ $("#grade4Setup").classList.remove("hidden");$("#grade4Game").classList.add("hidden")}if(id==="dictation"){ $("#dictSetup").classList.remove("hidden");$("#dictGame").classList.add("hidden")}
+ window.scrollTo({top:0,behavior:"smooth"})
 }
-$$(".tab").forEach(t=>t.addEventListener("click",()=>switchScreen(t.dataset.screen)));
+$$(".tab").forEach(t=>t.onclick=()=>switchScreen(t.dataset.screen));
 
-function pairLabel(p){
-  if(p==="mix") return "Vegyes";
-  return p.replace("-"," – ");
-}
-function random(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1])}
-
-function speak(text){
-  if(!("speechSynthesis" in window)) return false;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="hu-HU"; u.rate=.82; u.pitch=1;
-  const voices=speechSynthesis.getVoices();
-  const hu=voices.find(v=>v.lang && v.lang.toLowerCase().startsWith("hu"));
-  if(hu)u.voice=hu;
-  speechSynthesis.speak(u);
-  return true;
-}
-
-/* SPRINT */
-function buildSprint(){
-  const chosen=$("#pairSelect").value;
-  let qs=[];
-  for(let i=0;i<12;i++){
-    const p= chosen==="mix" ? random(Object.keys(PAIRS)) : chosen;
-    const item=random(PAIRS[p].words);
-    qs.push({pair:p, word:item[0], ans:item[1], a:PAIRS[p].a, b:PAIRS[p].b});
-  }
-  session={type:"sprint", qs, i:0, good:0, rts:[], started:0, runStreak:0, bestRun:0};
-  switchScreen("sprint");
-  showSprint();
+/* HANG */
+function startSprint(){
+ let chosen=$("#pairSelect").value,qs=[];
+ for(let i=0;i<12;i++){let p=chosen==="mix"?rnd(Object.keys(PAIRS)):chosen,it=rnd(PAIRS[p].words);qs.push({pair:p,word:it[0],ans:it[1],a:PAIRS[p].a,b:PAIRS[p].b})}
+ session={type:"sprint",qs,i:0,good:0,rts:[]};switchScreen("sprint");showSprint()
 }
 function showSprint(){
-  const q=session.qs[session.i];
-  $("#sprintPair").textContent=pairLabel(q.pair);
-  $("#sprintCount").textContent=(session.i+1)+" / "+session.qs.length;
-  $("#sprintBar").style.width=((session.i)/session.qs.length*100)+"%";
-  $("#maskedWord").textContent="••••";
-  $("#sprintFeedback").className="feedback hidden";
-  $("#nextSprint").classList.add("hidden");
-  const grid=$("#choiceGrid"); grid.innerHTML="";
-  [q.a,q.b].forEach(c=>{
-    const b=document.createElement("button");
-    b.className="choice";
-    b.textContent=c.toUpperCase();
-    b.onclick=()=>answerSprint(c,b);
-    grid.appendChild(b);
-  });
-  session.started=performance.now();
-  setTimeout(()=>speak(q.word),250);
+ let q=session.qs[session.i];$("#sprintPair").textContent=labelPair(q.pair);$("#sprintCount").textContent=(session.i+1)+" / "+session.qs.length;$("#sprintBar").style.width=(session.i/session.qs.length*100)+"%";$("#maskedWord").textContent="••••";
+ $("#sprintFeedback").className="feedback hidden";$("#nextSprint").classList.add("hidden");let g=$("#choiceGrid");g.innerHTML="";
+ [q.a,q.b].forEach(c=>{let b=document.createElement("button");b.className="choice";b.textContent=c.toUpperCase();b.onclick=()=>answerSprint(c);g.appendChild(b)});
+ session.started=performance.now();setTimeout(()=>speak(q.word),250)
 }
-function answerSprint(choice, btn){
-  const q=session.qs[session.i];
-  const rt=(performance.now()-session.started)/1000;
-  const ok=choice===q.ans;
-  session.rts.push(rt);
-  if(ok){session.good++;session.runStreak++;session.bestRun=Math.max(session.bestRun,session.runStreak)}
-  else session.runStreak=0;
-  record(q.pair,ok,rt);
-  $("#maskedWord").textContent=q.word;
-  $$("#choiceGrid button").forEach(x=>x.disabled=true);
-  const f=$("#sprintFeedback");
-  f.classList.remove("hidden");
-  if(ok){
-    f.classList.add("goodf");
-    f.innerHTML=`✓ Helyes — <b>${q.word}</b> (${rt.toFixed(1)} mp)`;
-  }else{
-    f.classList.add("badf");
-    f.innerHTML=`✗ A szó: <b>${q.word}</b> — helyes hang: <b>${q.ans.toUpperCase()}</b>`;
-  }
-  $("#nextSprint").classList.remove("hidden");
-  if(session.i===session.qs.length-1) $("#nextSprint").textContent="Eredmény";
-  else $("#nextSprint").textContent="Következő →";
+function answerSprint(c){
+ let q=session.qs[session.i],rt=(performance.now()-session.started)/1000,ok=c===q.ans;session.rts.push(rt);if(ok)session.good++;record("pair",q.pair,ok,rt);$("#maskedWord").textContent=q.word;$$("#choiceGrid button").forEach(x=>x.disabled=true);let f=$("#sprintFeedback");f.classList.remove("hidden");f.classList.add(ok?"goodf":"badf");f.innerHTML=ok?`✓ Helyes — <b>${q.word}</b>`:`✗ <b>${q.word}</b> — helyes: <b>${q.ans.toUpperCase()}</b>`;$("#nextSprint").classList.remove("hidden")
 }
-$("#speakBtn").onclick=()=>{
-  if(session?.type==="sprint") speak(session.qs[session.i].word);
-};
-$("#nextSprint").onclick=()=>{
-  if(session.i>=session.qs.length-1) finishSession();
-  else{session.i++;showSprint();}
-};
-$("#sprintExit").onclick=()=>switchScreen("home");
+$("#startSprint").onclick=startSprint;$("#speakBtn").onclick=()=>session?.type==="sprint"&&speak(session.qs[session.i].word);$("#nextSprint").onclick=()=>{if(session.i===session.qs.length-1)finish();else{session.i++;showSprint()}};$("#sprintExit").onclick=()=>switchScreen("home");
 
-/* HUNT */
-function buildHunt(){
-  const chosen=$("#pairSelect").value;
-  let pool = chosen==="mix" ? HUNTS : HUNTS.filter(x=>x.pair===chosen);
-  if(pool.length<10) pool=[...pool,...pool,...pool];
-  const qs=shuffle(pool).slice(0,10);
-  session={type:"hunt",qs,i:0,good:0,rts:[],started:0,runStreak:0,bestRun:0};
-  switchScreen("hunt"); showHunt();
+/* HIBAVADÁSZ */
+function startHunt(){
+ let chosen=$("#pairSelect").value,pool=chosen==="mix"?HUNTS:HUNTS.filter(x=>x.pair===chosen);while(pool.length<10)pool=[...pool,...pool];session={type:"hunt",qs:shuffle(pool).slice(0,10),i:0,good:0,rts:[]};switchScreen("hunt");showHunt()
 }
 function showHunt(){
-  const q=session.qs[session.i];
-  $("#huntCount").textContent=(session.i+1)+" / "+session.qs.length;
-  $("#huntBar").style.width=((session.i)/session.qs.length*100)+"%";
-  $("#huntFeedback").className="feedback hidden";
-  $("#nextHunt").classList.add("hidden");
-  const words=q.bad.split(" ");
-  const area=$("#sentenceArea"); area.innerHTML="";
-  words.forEach((w,idx)=>{
-    const clean=w.replace(/[.,!?;:]/g,"");
-    const s=document.createElement("span");
-    s.className="token"; s.textContent=w;
-    s.onclick=()=>answerHunt(clean,s);
-    area.appendChild(s);
-  });
-  session.started=performance.now();
+ let q=session.qs[session.i];$("#huntCount").textContent=(session.i+1)+" / "+session.qs.length;$("#huntBar").style.width=(session.i/session.qs.length*100)+"%";$("#huntFeedback").className="feedback hidden";$("#nextHunt").classList.add("hidden");let a=$("#sentenceArea");a.innerHTML="";
+ q.bad.split(" ").forEach(w=>{let s=document.createElement("span"),clean=w.replace(/[.,!?;:]/g,"");s.className="token";s.textContent=w;s.onclick=()=>answerHunt(clean,s);a.appendChild(s)});session.started=performance.now()
 }
-function answerHunt(clean, el){
-  if($("#nextHunt").classList.contains("hidden")===false) return;
-  const q=session.qs[session.i];
-  const rt=(performance.now()-session.started)/1000;
-  const ok=clean.toLowerCase()===q.wrong.toLowerCase();
-  session.rts.push(rt);
-  if(ok){session.good++;session.runStreak++;session.bestRun=Math.max(session.bestRun,session.runStreak)}
-  else session.runStreak=0;
-  record(q.pair,ok,rt);
-  $$("#sentenceArea .token").forEach(x=>x.style.pointerEvents="none");
-  const f=$("#huntFeedback"); f.classList.remove("hidden");
-  if(ok){
-    el.classList.add("correct");
-    f.classList.add("goodf");
-    f.innerHTML=`✓ Megvan. <b>${q.wrong}</b> → <b>${q.correct}</b>`;
-  }else{
-    el.classList.add("wrong");
-    const target=$$("#sentenceArea .token").find(x=>x.textContent.replace(/[.,!?;:]/g,"").toLowerCase()===q.wrong.toLowerCase());
-    if(target)target.classList.add("correct");
-    f.classList.add("badf");
-    f.innerHTML=`✗ A hibás szó: <b>${q.wrong}</b> → <b>${q.correct}</b>`;
-  }
-  $("#nextHunt").classList.remove("hidden");
-  $("#nextHunt").textContent=session.i===session.qs.length-1?"Eredmény":"Következő →";
+function answerHunt(clean,el){
+ if(!$("#nextHunt").classList.contains("hidden"))return;let q=session.qs[session.i],rt=(performance.now()-session.started)/1000,ok=clean.toLowerCase()===q.wrong.toLowerCase();session.rts.push(rt);if(ok)session.good++;record("pair",q.pair,ok,rt);$$("#sentenceArea .token").forEach(x=>x.style.pointerEvents="none");
+ let target=$$("#sentenceArea .token").find(x=>x.textContent.replace(/[.,!?;:]/g,"").toLowerCase()===q.wrong.toLowerCase());el.classList.add(ok?"correct":"wrong");if(target)target.classList.add("correct");
+ let f=$("#huntFeedback");f.classList.remove("hidden");f.classList.add(ok?"goodf":"badf");f.innerHTML=`${ok?"✓":"✗"} <b>${q.wrong}</b> → <b>${q.correct}</b>`;$("#nextHunt").classList.remove("hidden")
 }
-$("#nextHunt").onclick=()=>{
-  if(session.i>=session.qs.length-1) finishSession();
-  else{session.i++;showHunt();}
-};
-$("#huntExit").onclick=()=>switchScreen("home");
+$("#startHunt").onclick=startHunt;$("#nextHunt").onclick=()=>{if(session.i===session.qs.length-1)finish();else{session.i++;showHunt()}};$("#huntExit").onclick=()=>switchScreen("home");
 
-function finishSession(){
-  markTrainingDay();
-  $("#sprintBar").style.width="100%";
-  $("#huntBar").style.width="100%";
-  const n=session.qs.length, good=session.good;
-  const acc=Math.round(good/n*100);
-  const avg=session.rts.reduce((a,b)=>a+b,0)/Math.max(1,session.rts.length);
-  $("#resultScore").textContent=good+"/"+n;
-  $("#resultAcc").textContent=acc+"%";
-  $("#resultRt").textContent=avg.toFixed(1)+" mp";
-  $("#resultIcon").textContent=acc>=90?"🏆":acc>=75?"🎯":"📈";
-  $("#resultTitle").textContent=acc>=90?"Nagyon stabil kör":acc>=75?"Jó menet":"Ez még edzés alatt van";
-  $("#resultMsg").textContent=
-    acc>=90 ? "Most érdemes gyorsítani vagy vegyes hangpárokkal próbálkozni." :
-    acc>=75 ? "Még néhány hasonló körrel jól automatizálható." :
-    "A pontosság fontosabb a sebességnél. Érdemes ugyanazzal a hangpárral újra próbálni.";
-  switchScreen("result");
+/* 4. OSZTÁLY */
+function catName(c){return c==="imperative"?"Felszólító alakok":c==="analysis"?"Szóelemzés":c==="shortlong"?"Rövid felszólító alakok":"Vegyes"}
+function startG4(){
+ let c=$("#g4Category").value,pool=c==="mix"?G4:G4.filter(x=>x.cat===c);session={type:"g4",qs:shuffle(pool).slice(0,Math.min(12,pool.length)),i:0,good:0,rts:[]};$("#grade4Setup").classList.add("hidden");$("#grade4Game").classList.remove("hidden");showG4()
+}
+function showG4(){
+ let q=session.qs[session.i];$("#g4CatLabel").textContent=catName(q.cat);$("#g4Count").textContent=(session.i+1)+" / "+session.qs.length;$("#g4Bar").style.width=(session.i/session.qs.length*100)+"%";
+ $("#g4Prompt").innerHTML=q.prompt.replace("___",`<span class="baseword">?</span>`)+`<br><span class="muted" style="font-size:13px">Alapszó: ${q.base}</span>`;
+ $("#g4Feedback").className="feedback hidden";$("#g4Rule").className="rulebox hidden";$("#g4Next").classList.add("hidden");let g=$("#g4Choices");g.innerHTML="";
+ shuffle(q.opts).forEach(o=>{let b=document.createElement("button");b.className="choice ghost";b.textContent=o;b.onclick=()=>answerG4(o,b);g.appendChild(b)});session.started=performance.now();setTimeout(()=>speak(q.speak),300)
+}
+function answerG4(o,btn){
+ if(!$("#g4Next").classList.contains("hidden"))return;let q=session.qs[session.i],rt=(performance.now()-session.started)/1000,ok=o===q.ans;session.rts.push(rt);if(ok)session.good++;record("g4",q.cat,ok,rt);
+ $$("#g4Choices button").forEach(b=>{b.disabled=true;if(b.textContent===q.ans)b.classList.add("good")});if(!ok)btn.classList.add("bad");
+ let f=$("#g4Feedback");f.classList.remove("hidden");f.classList.add(ok?"goodf":"badf");f.innerHTML=ok?`✓ Helyes: <b>${q.ans}</b>`:`✗ Helyesen: <b>${q.ans}</b>`;
+ let r=$("#g4Rule");r.classList.remove("hidden");r.innerHTML="<b>Miért?</b> "+q.rule;$("#g4Next").classList.remove("hidden")
+}
+$("#startGrade4").onclick=startG4;$("#startGrade4Home").onclick=()=>switchScreen("grade4");$("#g4Speak").onclick=()=>session?.type==="g4"&&speak(session.qs[session.i].speak);$("#g4Next").onclick=()=>{if(session.i===session.qs.length-1)finish();else{session.i++;showG4()}};$("#g4Exit").onclick=()=>switchScreen("home");
+
+
+/* DIKTÁLÁS */
+function dictCatName(c){
+ return c==="imperative"?"Felszólító alakok":c==="analysis"?"Szóelemzés":c==="pairs"?"Hangpárok":"Vegyes";
+}
+function normText(s){
+ return (s||"").trim().toLocaleLowerCase("hu-HU").normalize("NFC").replace(/[.!?,;:]+$/,"");
+}
+function startDict(){
+ let c=$("#dictCategory").value;
+ let pool=c==="mix"?DICT:DICT.filter(x=>x.cat===c);
+ session={
+  type:"dict",
+  qs:shuffle(pool).slice(0,Math.min(10,pool.length)),
+  i:0,good:0,rts:[],
+  level:$("#dictLevel").value,
+  attempts:0,hinted:false
+ };
+ $("#dictSetup").classList.add("hidden");
+ $("#dictGame").classList.remove("hidden");
+ showDict();
+}
+function showDict(){
+ let q=session.qs[session.i];
+ session.attempts=0;session.hinted=false;session.started=performance.now();
+ $("#dictCatLabel").textContent=dictCatName(q.cat);
+ $("#dictCount").textContent=(session.i+1)+" / "+session.qs.length;
+ $("#dictBar").style.width=(session.i/session.qs.length*100)+"%";
+ $("#dictInput").value="";
+ $("#dictInput").disabled=false;
+ $("#dictCheck").disabled=false;
+ $("#dictHint").disabled=false;
+ $("#dictAttempts").textContent="1. próbálkozás";
+ $("#dictFeedback").className="feedback hidden";
+ $("#dictRule").className="rulebox hidden";
+ $("#dictNext").classList.add("hidden");
+ if(session.level==="frame"){
+   $("#dictPrompt").innerHTML=q.frame.replace("___",'<span class="baseword">________</span>');
+ }else{
+   $("#dictPrompt").innerHTML='<span class="muted">Csak a hangra figyelj. A mondatot az ellenőrzés után látod.</span>';
+ }
+ setTimeout(()=>{speak(q.audio);$("#dictInput").focus()},300);
+}
+function recordDict(q,solved,firstTry,rt,hinted){
+ data.total++;if(solved)data.correct++;data.rtSum+=rt||0;
+ let id=q.cat;if(!data.dict[id])data.dict[id]={total:0,correct:0,firstTry:0,hinted:0,rtSum:0};
+ let s=data.dict[id];s.total++;if(solved)s.correct++;if(firstTry)s.firstTry++;if(hinted)s.hinted++;s.rtSum+=rt||0;
+ let k=keyToday();if(!data.days[k])data.days[k]={q:0,correct:0};data.days[k].q++;if(solved)data.days[k].correct++;save();
+}
+function finishDictQuestion(solved,firstTry){
+ let q=session.qs[session.i],rt=(performance.now()-session.started)/1000;
+ session.rts.push(rt);if(solved)session.good++;
+ recordDict(q,solved,firstTry,rt,session.hinted);
+ $("#dictInput").disabled=true;$("#dictCheck").disabled=true;$("#dictHint").disabled=true;
+ $("#dictPrompt").innerHTML=q.frame.replace("___",`<span class="baseword">${q.target}</span>`);
+ let r=$("#dictRule");r.classList.remove("hidden");r.innerHTML="<b>Miért?</b> "+q.rule;
+ $("#dictNext").classList.remove("hidden");
+}
+function checkDict(){
+ let q=session.qs[session.i],typed=normText($("#dictInput").value);
+ if(!typed){$("#dictInput").focus();return}
+ session.attempts++;
+ let ok=typed===normText(q.target),f=$("#dictFeedback");f.classList.remove("hidden");
+ if(ok){
+   let firstTry=session.attempts===1 && !session.hinted;
+   f.className="feedback goodf";
+   f.innerHTML=firstTry?`✓ Elsőre helyes: <b>${q.target}</b>`:`✓ Megvan: <b>${q.target}</b>`;
+   finishDictQuestion(true,firstTry);
+ }else if(session.attempts===1){
+   f.className="feedback badf";
+   f.innerHTML="✗ Még nem jó. Hallgasd meg újra, és próbáld meg még egyszer.";
+   $("#dictAttempts").textContent="2. próbálkozás";
+   $("#dictInput").select();
+   speak(q.audio);
+ }else{
+   f.className="feedback badf";
+   f.innerHTML=`✗ Helyesen: <b>${q.target}</b>`;
+   finishDictQuestion(false,false);
+ }
+}
+function showDictHint(){
+ let q=session.qs[session.i];session.hinted=true;
+ let r=$("#dictRule");r.classList.remove("hidden");
+ r.innerHTML=`<b>Segítség:</b> alapszó: <b>${q.base}</b>. Hallgasd meg még egyszer, majd írd le a szóalakot.`;
+ $("#dictHint").disabled=true;
+ speak(q.audio);
+ $("#dictInput").focus();
+}
+$("#startDict").onclick=startDict;
+$("#startDictHome").onclick=()=>switchScreen("dictation");
+$("#dictSpeak").onclick=()=>session?.type==="dict"&&speak(session.qs[session.i].audio);
+$("#dictCheck").onclick=checkDict;
+$("#dictHint").onclick=showDictHint;
+$("#dictInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!$("#dictCheck").disabled)checkDict()});
+$("#dictNext").onclick=()=>{if(session.i===session.qs.length-1)finish();else{session.i++;showDict()}};
+$("#dictExit").onclick=()=>switchScreen("home");
+
+
+/* EREDMÉNY */
+function finish(){
+ updateStreak();let n=session.qs.length,g=session.good,acc=Math.round(g/n*100),avg=session.rts.reduce((a,b)=>a+b,0)/session.rts.length;
+ $("#resultScore").textContent=g+"/"+n;$("#resultAcc").textContent=acc+"%";$("#resultRt").textContent=avg.toFixed(1)+" mp";$("#resultIcon").textContent=acc>=90?"🏆":acc>=75?"🎯":"📈";$("#resultTitle").textContent=acc>=90?"Nagyon stabil kör":acc>=75?"Jó menet":"Ezt még érdemes erősíteni";
+ if(session.type==="dict"){
+   $("#resultMsg").textContent=acc>=90?"Diktálásban is nagyon stabil. Következőnek érdemes a „Csak hang” szintet választani.":acc>=75?"Jól halad. Ugyanezeket a szóalakokat még néhány rövid körrel érdemes automatizálni.":"Érdemes ugyanebből a kategóriából még egy kört menni, és az alapszavas segítséget tudatosan használni.";
+ }else{
+   $("#resultMsg").textContent=acc>=90?"Következő alkalommal jöhet vegyesebb vagy gyorsabb kör.":acc>=75?"Az alakok nagy része már stabil.":"Ugyanezzel a kategóriával érdemes még egy rövid kört menni.";
+ }
+ switchScreen("result")
 }
 $("#resultHome").onclick=()=>switchScreen("home");
 
-$("#startSprint").onclick=buildSprint;
-$("#startHunt").onclick=buildHunt;
-
 function renderHome(){
-  updateDayStreak();
-  const t=todayKey(), td=data.days[t]||{q:0,correct:0};
-  $("#homeToday").textContent=td.q;
-  $("#homeAcc").textContent=td.q?Math.round(td.correct/td.q*100)+"%":"–";
-  $("#homeBest").textContent=data.bestStreak||0;
-  $("#streakBadge").textContent="🔥 "+(data.currentStreak||0)+" nap";
-
-  let days=0;
-  const d=new Date();
-  for(let i=0;i<7;i++){
-    const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    if(data.days[k]?.q>=5)days++;
-    d.setDate(d.getDate()-1);
-  }
-  $("#weeklyBar").style.width=Math.min(100,days/5*100)+"%";
-  $("#weeklyText").textContent=days+" / 5 edzésnap az elmúlt 7 napban";
+ updateStreak();let td=data.days[keyToday()]||{q:0,correct:0};$("#homeToday").textContent=td.q;$("#homeAcc").textContent=td.q?Math.round(td.correct/td.q*100)+"%":"–";$("#homeBest").textContent=data.bestStreak||0;$("#streakBadge").textContent="🔥 "+(data.currentStreak||0)+" nap";
+ let days=0,d=new Date();for(let i=0;i<7;i++){let k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(data.days[k]?.q>=5)days++;d.setDate(d.getDate()-1)}$("#weeklyBar").style.width=Math.min(100,days/5*100)+"%";$("#weeklyText").textContent=days+" / 5 edzésnap az elmúlt 7 napban"
+}
+function statRows(box,ids,namer){
+ return ids.map(id=>{let s=box[id]||{total:0,correct:0,rtSum:0},acc=s.total?Math.round(s.correct/s.total*100):0;return `<div style="margin:12px 0"><div class="row space"><b>${namer(id)}</b><span class="muted">${s.total?acc+"%":"nincs adat"} · ${s.total} válasz</span></div><div class="progress" style="margin-top:6px"><div style="width:${acc}%"></div></div></div>`}).join("")
+}
+function renderDictStats(){
+ let ids=["imperative","analysis","pairs"];
+ return ids.map(id=>{
+   let s=data.dict[id]||{total:0,correct:0,firstTry:0,hinted:0,rtSum:0};
+   let solved=s.total?Math.round(s.correct/s.total*100):0;
+   let first=s.total?Math.round(s.firstTry/s.total*100):0;
+   return `<div style="margin:12px 0">
+    <div class="row space"><b>${dictCatName(id)}</b><span class="muted">${s.total?s.total+" szó":"nincs adat"}</span></div>
+    <div class="muted" style="font-size:13px;margin:4px 0">megoldva: ${solved}% · elsőre, segítség nélkül: ${first}%${s.hinted?` · segítség: ${s.hinted}×`:""}</div>
+    <div class="progress"><div style="width:${first}%"></div></div>
+   </div>`;
+ }).join("");
 }
 function renderStats(){
-  updateDayStreak();
-  $("#totalQ").textContent=data.total;
-  $("#totalAcc").textContent=data.total?Math.round(data.correct/data.total*100)+"%":"–";
-  $("#avgRt").textContent=data.total?(data.rtSum/data.total).toFixed(1)+" mp":"–";
-  const box=$("#pairStats");box.innerHTML="";
-  Object.keys(PAIRS).forEach(p=>{
-    const s=data.pair[p]||{total:0,correct:0,rtSum:0};
-    const acc=s.total?Math.round(s.correct/s.total*100):0;
-    const div=document.createElement("div");
-    div.style.margin="12px 0";
-    div.innerHTML=`
-      <div class="row space"><b>${pairLabel(p)}</b><span class="muted">${s.total?acc+"%":"nincs adat"} · ${s.total} válasz</span></div>
-      <div class="progress" style="margin-top:6px"><div style="width:${acc}%"></div></div>`;
-    box.appendChild(div);
-  });
+ $("#totalQ").textContent=data.total;$("#totalAcc").textContent=data.total?Math.round(data.correct/data.total*100)+"%":"–";$("#avgRt").textContent=data.total?(data.rtSum/data.total).toFixed(1)+" mp":"–";
+ $("#pairStats").innerHTML=statRows(data.pair,Object.keys(PAIRS),labelPair);$("#g4Stats").innerHTML=statRows(data.g4,["imperative","analysis","shortlong"],catName);$("#dictStats").innerHTML=renderDictStats()
 }
-$("#resetStats").onclick=()=>{
-  if(confirm("Biztosan törlöd az összes eredményt?")){
-    localStorage.removeItem(storeKey); data=loadData(); renderStats(); renderHome();
-  }
-};
-
+$("#resetStats").onclick=()=>{if(confirm("Biztosan törlöd az összes eredményt?")){localStorage.removeItem(STORE);data=load();renderStats();renderHome()}};
 renderHome();
 </script>
 </body>
