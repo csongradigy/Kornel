@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#111827"/>
+<title>HangPár – Zöngés/Zöngétlen tréner</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111827;
+  --panel2:#182235;
+  --text:#f8fafc;
+  --muted:#a8b3c7;
+  --accent:#60a5fa;
+  --good:#34d399;
+  --bad:#fb7185;
+  --warn:#fbbf24;
+  --line:#263247;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#0b1020 0%,#111827 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+.app{max-width:680px;margin:auto;padding:18px 14px 38px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand h1{font-size:22px;margin:0;font-weight:800;letter-spacing:.2px}
+.brand p{font-size:13px;margin:3px 0 0;color:var(--muted)}
+.badge{background:#172036;border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:13px;color:#dbeafe}
+.card{
+  background:rgba(17,24,39,.96);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 12px 35px rgba(0,0,0,.18);
+  margin-bottom:14px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{
+  border:0;border-radius:14px;padding:14px 12px;font-weight:750;font-size:16px;
+  color:white;background:#22304a;cursor:pointer;
+}
+button:active{transform:scale(.985)}
+button.primary{background:var(--accent);color:#071225}
+button.good{background:var(--good);color:#07140e}
+button.bad{background:var(--bad);color:#24070d}
+button.ghost{background:#182235;border:1px solid #2b3b57}
+button.choice{min-height:72px;font-size:25px}
+button.small{font-size:14px;padding:10px 12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.space{justify-content:space-between}
+h2{font-size:18px;margin:0 0 10px}
+h3{font-size:16px;margin:0 0 8px}
+p{line-height:1.45}
+.muted{color:var(--muted)}
+.big{
+  font-size:34px;font-weight:850;text-align:center;padding:16px 8px;letter-spacing:.5px
+}
+.center{text-align:center}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{
+  background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center
+}
+.stat b{font-size:22px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:#0f172a;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.progress > div{height:100%;width:0;background:var(--accent);transition:width .2s}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.tab{font-size:12px;padding:10px 6px;background:#172036;color:var(--muted)}
+.tab.active{background:#243451;color:#fff;border:1px solid #3b82f6}
+.hidden{display:none!important}
+.feedback{
+  margin-top:12px;padding:11px 12px;border-radius:12px;font-weight:700;
+  background:#172036;border:1px solid var(--line)
+}
+.feedback.goodf{border-color:#1f9d73;color:#a7f3d0}
+.feedback.badf{border-color:#c9475c;color:#fecdd3}
+.wordline{font-size:22px;line-height:1.55;text-align:center}
+.token{
+  display:inline-block;margin:5px 3px;padding:9px 11px;border-radius:11px;background:#1a263c;border:1px solid #2d3d58;
+  cursor:pointer
+}
+.token.selected{outline:2px solid var(--accent)}
+.token.correct{background:#0e3b31;border-color:#1f9d73}
+.token.wrong{background:#4a1720;border-color:#c9475c}
+.section-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8ea1bf;margin-bottom:8px}
+select{
+  width:100%;background:#0f172a;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px
+}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+footer{font-size:12px;color:#8290a8;text-align:center;margin-top:14px}
+kbd{background:#0f172a;border:1px solid #334155;padding:2px 6px;border-radius:6px}
+.trophy{font-size:48px}
+.list{padding-left:18px;color:#d9e1ef}.list li{margin:6px 0}
+.notice{font-size:13px;color:#cbd5e1;background:#0f172a;border-left:3px solid var(--warn);padding:10px 12px;border-radius:10px}
+@media(max-width:420px){
+  .app{padding:12px 10px 30px}
+  .card{padding:14px;border-radius:16px}
+  .big{font-size:30px}
+  button.choice{min-height:68px;font-size:23px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <h1>HangPár</h1>
+      <p>Zöngés–zöngétlen tréner</p>
+    </div>
+    <div class="badge" id="streakBadge">🔥 0 nap</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-screen="home">Kezdőlap</button>
+    <button class="tab" data-screen="sprint">Sprint</button>
+    <button class="tab" data-screen="hunt">Hibavadász</button>
+    <button class="tab" data-screen="stats">Statisztika</button>
+  </div>
+
+  <section id="home" class="screen">
+    <div class="card">
+      <div class="section-title">Mai cél</div>
+      <h2>10 perc. Pontosság előbb, sebesség utána.</h2>
+      <p class="muted">A feladatok rövidek, mérik a reakcióidőt, és külön követik a problémás hangpárokat.</p>
+      <div class="stats">
+        <div class="stat"><b id="homeToday">0</b><span>mai kérdés</span></div>
+        <div class="stat"><b id="homeAcc">–</b><span>pontosság</span></div>
+        <div class="stat"><b id="homeBest">0</b><span>legjobb sorozat</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Edzés indítása</h2>
+      <label class="muted" for="pairSelect">Gyakorolt hangpár</label>
+      <select id="pairSelect">
+        <option value="mix">Vegyes</option>
+        <option value="p-b">p – b</option>
+        <option value="t-d">t – d</option>
+        <option value="k-g">k – g</option>
+        <option value="f-v">f – v</option>
+        <option value="sz-z">sz – z</option>
+        <option value="s-zs">s – zs</option>
+      </select>
+      <div class="grid" style="margin-top:10px">
+        <button class="primary" id="startSprint">⚡ Hangpár sprint</button>
+        <button class="ghost" id="startHunt">🔎 Hibavadászat</button>
+      </div>
+      <div class="notice" style="margin-top:12px">
+        A hangos feladatok a telefon beépített magyar beszédhangját használják. Ha furcsán ejt egy szót, ugyanaz a feladat olvasva is megoldható.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Heti cél</h2>
+      <div class="progress"><div id="weeklyBar"></div></div>
+      <p class="muted" id="weeklyText">0 / 5 edzésnap</p>
+    </div>
+  </section>
+
+  <section id="sprint" class="screen hidden">
+    <div class="card">
+      <div class="row space">
+        <div>
+          <div class="section-title">Hangpár sprint</div>
+          <h2 id="sprintPair">Vegyes</h2>
+        </div>
+        <button class="small ghost" id="sprintExit">Kilépés</button>
+      </div>
+      <div class="progress"><div id="sprintBar"></div></div>
+      <p class="muted center" id="sprintCount">1 / 12</p>
+
+      <div id="listenArea">
+        <div class="center">
+          <button class="primary" id="speakBtn">🔊 Meghallgatom</button>
+        </div>
+        <div class="big" id="maskedWord">••••</div>
+        <p class="muted center">Melyik hangot hallottad?</p>
+        <div class="grid" id="choiceGrid"></div>
+      </div>
+
+      <div id="sprintFeedback" class="feedback hidden"></div>
+      <div class="center" style="margin-top:12px">
+        <button class="ghost hidden" id="nextSprint">Következő →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="hunt" class="screen hidden">
+    <div class="card">
+      <div class="row space">
+        <div>
+          <div class="section-title">Hibavadászat</div>
+          <h2>Találd meg a hibás szót</h2>
+        </div>
+        <button class="small ghost" id="huntExit">Kilépés</button>
+      </div>
+      <div class="progress"><div id="huntBar"></div></div>
+      <p class="muted center" id="huntCount">1 / 10</p>
+      <p class="muted center">Egy szóban zöngés–zöngétlen csere történt.</p>
+      <div class="wordline" id="sentenceArea"></div>
+      <div id="huntFeedback" class="feedback hidden"></div>
+      <div class="center" style="margin-top:12px">
+        <button class="ghost hidden" id="nextHunt">Következő →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats" class="screen hidden">
+    <div class="card">
+      <div class="section-title">Eredmények</div>
+      <h2>Saját hibaprofil</h2>
+      <p class="muted">A rendszer külön számolja, mely hangpárok mennek biztosan és melyeknél kell több gyakorlás.</p>
+      <div id="pairStats"></div>
+    </div>
+    <div class="card">
+      <h2>Összesített teljesítmény</h2>
+      <div class="stats">
+        <div class="stat"><b id="totalQ">0</b><span>válasz</span></div>
+        <div class="stat"><b id="totalAcc">–</b><span>pontosság</span></div>
+        <div class="stat"><b id="avgRt">–</b><span>átl. idő</span></div>
+      </div>
+      <button class="bad small" style="margin-top:14px;width:100%" id="resetStats">Statisztika törlése</button>
+    </div>
+  </section>
+
+  <section id="result" class="screen hidden">
+    <div class="card center">
+      <div class="trophy" id="resultIcon">🏁</div>
+      <h2 id="resultTitle">Edzés kész</h2>
+      <div class="stats">
+        <div class="stat"><b id="resultScore">0/0</b><span>helyes</span></div>
+        <div class="stat"><b id="resultAcc">0%</b><span>pontosság</span></div>
+        <div class="stat"><b id="resultRt">–</b><span>átl. idő</span></div>
+      </div>
+      <p id="resultMsg" class="muted"></p>
+      <button class="primary" id="resultHome">Vissza a kezdőlapra</button>
+    </div>
+  </section>
+
+  <footer>Az alkalmazás gyakorlóeszköz, nem diagnosztikai teszt.</footer>
+</div>
+
+<script>
+const PAIRS = {
+  "p-b": {a:"p", b:"b", words:[
+    ["pad","p"],["papír","p"],["pálya","p"],["pince","p"],["park","p"],["pont","p"],
+    ["bőr","b"],["bolt","b"],["bátor","b"],["bérlet","b"],["boríték","b"],["bunker","b"]
+  ]},
+  "t-d": {a:"t", b:"d", words:[
+    ["térkép","t"],["tanár","t"],["telefon","t"],["torony","t"],["tábor","t"],["titok","t"],
+    ["daru","d"],["doboz","d"],["dinnye","d"],["délután","d"],["dió","d"],["dráma","d"]
+  ]},
+  "k-g": {a:"k", b:"g", words:[
+    ["kapu","k"],["kód","k"],["kerék","k"],["képregény","k"],["kaland","k"],["kocka","k"],
+    ["gép","g"],["gumi","g"],["garázs","g"],["gomb","g"],["gördeszka","g"],["galaxis","g"]
+  ]},
+  "f-v": {a:"f", b:"v", words:[
+    ["film","f"],["falu","f"],["fény","f"],["foci","f"],["feladat","f"],["fórum","f"],
+    ["vonat","v"],["videó","v"],["vihar","v"],["világ","v"],["vonal","v"],["vödör","v"]
+  ]},
+  "sz-z": {a:"sz", b:"z", words:[
+    ["sziget","sz"],["szoba","sz"],["szám","sz"],["szünet","sz"],["szél","sz"],["szint","sz"],
+    ["zebra","z"],["zene","z"],["zöld","z"],["zokni","z"],["zaj","z"],["zóna","z"]
+  ]},
+  "s-zs": {a:"s", b:"zs", words:[
+    ["séta","s"],["sátor","s"],["sárkány","s"],["siker","s"],["síp","s"],["sorozat","s"],
+    ["zsák","zs"],["zsiráf","zs"],["zseni","zs"],["zseb","zs"],["zsúfolt","zs"],["zsömle","zs"]
+  ]}
+};
+
+const HUNTS = [
+  {pair:"p-b", good:"A parkban új pályát építettek a gördeszkásoknak.", bad:"A barkban új pályát építettek a gördeszkásoknak.", wrong:"barkban", correct:"parkban"},
+  {pair:"p-b", good:"Bence a boltban vett egy új pendrive-ot.", bad:"Pence a boltban vett egy új pendrive-ot.", wrong:"Pence", correct:"Bence"},
+  {pair:"t-d", good:"Dani délután találkozik a barátaival.", bad:"Tani délután találkozik a barátaival.", wrong:"Tani", correct:"Dani"},
+  {pair:"t-d", good:"A térképen megjelöltük az útvonalat.", bad:"A dérképen megjelöltük az útvonalat.", wrong:"dérképen", correct:"térképen"},
+  {pair:"k-g", good:"A garázs előtt állt egy fekete kerékpár.", bad:"A karázs előtt állt egy fekete kerékpár.", wrong:"karázs", correct:"garázs"},
+  {pair:"k-g", good:"A képernyőn megjelent a játék következő pályája.", bad:"A gépernyőn megjelent a játék következő pályája.", wrong:"gépernyőn", correct:"képernyőn"},
+  {pair:"f-v", good:"A vonat pontosan érkezett az állomásra.", bad:"A fonat pontosan érkezett az állomásra.", wrong:"fonat", correct:"vonat"},
+  {pair:"f-v", good:"A film végén meglepő fordulat következett.", bad:"A vilm végén meglepő fordulat következett.", wrong:"vilm", correct:"film"},
+  {pair:"sz-z", good:"A szünetben mindenki kiment az udvarra.", bad:"A zünetben mindenki kiment az udvarra.", wrong:"zünetben", correct:"szünetben"},
+  {pair:"sz-z", good:"A zene hangosan szólt a fejhallgatóban.", bad:"A szene hangosan szólt a fejhallgatóban.", wrong:"szene", correct:"zene"},
+  {pair:"s-zs", good:"A zsebemben maradt a belépőkártya.", bad:"A sebemben maradt a belépőkártya.", wrong:"sebemben", correct:"zsebemben"},
+  {pair:"s-zs", good:"A sárkány a történet végén eltűnt.", bad:"A zsárkány a történet végén eltűnt.", wrong:"zsárkány", correct:"sárkány"},
+  {pair:"k-g", good:"A kutatócsoport új galaxist vizsgált.", bad:"A gutatócsoport új galaxist vizsgált.", wrong:"gutatócsoport", correct:"kutatócsoport"},
+  {pair:"t-d", good:"A döntő előtt mindenki nagyon figyelt.", bad:"A töntő előtt mindenki nagyon figyelt.", wrong:"töntő", correct:"döntő"},
+  {pair:"p-b", good:"A program néhány másodperc alatt betöltött.", bad:"A brogram néhány másodperc alatt betöltött.", wrong:"brogram", correct:"program"},
+  {pair:"f-v", good:"A feladat megoldásához videót is használhatott.", bad:"A veladat megoldásához videót is használhatott.", wrong:"veladat", correct:"feladat"},
+];
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const storeKey = "hangparStatsV1";
+let data = loadData();
+let session = null;
+
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function loadData(){
+  try{
+    return JSON.parse(localStorage.getItem(storeKey)) || {
+      total:0, correct:0, rtSum:0, bestStreak:0, currentStreak:0,
+      pair:{}, days:{}, lastDay:null
+    };
+  }catch(e){return {total:0,correct:0,rtSum:0,bestStreak:0,currentStreak:0,pair:{},days:{},lastDay:null}}
+}
+function saveData(){localStorage.setItem(storeKey,JSON.stringify(data));}
+function ensurePair(p){
+  if(!data.pair[p]) data.pair[p]={total:0,correct:0,rtSum:0};
+}
+function record(pair, correct, rt){
+  data.total++;
+  if(correct) data.correct++;
+  data.rtSum += rt || 0;
+  ensurePair(pair);
+  data.pair[pair].total++;
+  if(correct) data.pair[pair].correct++;
+  data.pair[pair].rtSum += rt || 0;
+  const t=todayKey();
+  if(!data.days[t]) data.days[t]={q:0, correct:0};
+  data.days[t].q++;
+  if(correct) data.days[t].correct++;
+  saveData();
+}
+
+function markTrainingDay(){
+  const t=todayKey();
+  if(!data.days[t]) data.days[t]={q:0,correct:0};
+  updateDayStreak();
+  saveData();
+}
+function updateDayStreak(){
+  const dates = Object.keys(data.days).filter(d=>data.days[d].q>=5).sort();
+  if(!dates.length){data.currentStreak=0;return}
+  let streak=0;
+  let d=new Date(todayKey()+"T12:00:00");
+  for(let i=0;i<365;i++){
+    const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    if(data.days[k] && data.days[k].q>=5){streak++; d.setDate(d.getDate()-1)}
+    else if(i===0){d.setDate(d.getDate()-1); continue}
+    else break;
+  }
+  data.currentStreak=streak;
+  if(streak>data.bestStreak)data.bestStreak=streak;
+}
+
+function switchScreen(id){
+  $$(".screen").forEach(x=>x.classList.add("hidden"));
+  $("#"+id).classList.remove("hidden");
+  $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.screen===id));
+  if(id==="home")renderHome();
+  if(id==="stats")renderStats();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$$(".tab").forEach(t=>t.addEventListener("click",()=>switchScreen(t.dataset.screen)));
+
+function pairLabel(p){
+  if(p==="mix") return "Vegyes";
+  return p.replace("-"," – ");
+}
+function random(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1])}
+
+function speak(text){
+  if(!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="hu-HU"; u.rate=.82; u.pitch=1;
+  const voices=speechSynthesis.getVoices();
+  const hu=voices.find(v=>v.lang && v.lang.toLowerCase().startsWith("hu"));
+  if(hu)u.voice=hu;
+  speechSynthesis.speak(u);
+  return true;
+}
+
+/* SPRINT */
+function buildSprint(){
+  const chosen=$("#pairSelect").value;
+  let qs=[];
+  for(let i=0;i<12;i++){
+    const p= chosen==="mix" ? random(Object.keys(PAIRS)) : chosen;
+    const item=random(PAIRS[p].words);
+    qs.push({pair:p, word:item[0], ans:item[1], a:PAIRS[p].a, b:PAIRS[p].b});
+  }
+  session={type:"sprint", qs, i:0, good:0, rts:[], started:0, runStreak:0, bestRun:0};
+  switchScreen("sprint");
+  showSprint();
+}
+function showSprint(){
+  const q=session.qs[session.i];
+  $("#sprintPair").textContent=pairLabel(q.pair);
+  $("#sprintCount").textContent=(session.i+1)+" / "+session.qs.length;
+  $("#sprintBar").style.width=((session.i)/session.qs.length*100)+"%";
+  $("#maskedWord").textContent="••••";
+  $("#sprintFeedback").className="feedback hidden";
+  $("#nextSprint").classList.add("hidden");
+  const grid=$("#choiceGrid"); grid.innerHTML="";
+  [q.a,q.b].forEach(c=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    b.textContent=c.toUpperCase();
+    b.onclick=()=>answerSprint(c,b);
+    grid.appendChild(b);
+  });
+  session.started=performance.now();
+  setTimeout(()=>speak(q.word),250);
+}
+function answerSprint(choice, btn){
+  const q=session.qs[session.i];
+  const rt=(performance.now()-session.started)/1000;
+  const ok=choice===q.ans;
+  session.rts.push(rt);
+  if(ok){session.good++;session.runStreak++;session.bestRun=Math.max(session.bestRun,session.runStreak)}
+  else session.runStreak=0;
+  record(q.pair,ok,rt);
+  $("#maskedWord").textContent=q.word;
+  $$("#choiceGrid button").forEach(x=>x.disabled=true);
+  const f=$("#sprintFeedback");
+  f.classList.remove("hidden");
+  if(ok){
+    f.classList.add("goodf");
+    f.innerHTML=`✓ Helyes — <b>${q.word}</b> (${rt.toFixed(1)} mp)`;
+  }else{
+    f.classList.add("badf");
+    f.innerHTML=`✗ A szó: <b>${q.word}</b> — helyes hang: <b>${q.ans.toUpperCase()}</b>`;
+  }
+  $("#nextSprint").classList.remove("hidden");
+  if(session.i===session.qs.length-1) $("#nextSprint").textContent="Eredmény";
+  else $("#nextSprint").textContent="Következő →";
+}
+$("#speakBtn").onclick=()=>{
+  if(session?.type==="sprint") speak(session.qs[session.i].word);
+};
+$("#nextSprint").onclick=()=>{
+  if(session.i>=session.qs.length-1) finishSession();
+  else{session.i++;showSprint();}
+};
+$("#sprintExit").onclick=()=>switchScreen("home");
+
+/* HUNT */
+function buildHunt(){
+  const chosen=$("#pairSelect").value;
+  let pool = chosen==="mix" ? HUNTS : HUNTS.filter(x=>x.pair===chosen);
+  if(pool.length<10) pool=[...pool,...pool,...pool];
+  const qs=shuffle(pool).slice(0,10);
+  session={type:"hunt",qs,i:0,good:0,rts:[],started:0,runStreak:0,bestRun:0};
+  switchScreen("hunt"); showHunt();
+}
+function showHunt(){
+  const q=session.qs[session.i];
+  $("#huntCount").textContent=(session.i+1)+" / "+session.qs.length;
+  $("#huntBar").style.width=((session.i)/session.qs.length*100)+"%";
+  $("#huntFeedback").className="feedback hidden";
+  $("#nextHunt").classList.add("hidden");
+  const words=q.bad.split(" ");
+  const area=$("#sentenceArea"); area.innerHTML="";
+  words.forEach((w,idx)=>{
+    const clean=w.replace(/[.,!?;:]/g,"");
+    const s=document.createElement("span");
+    s.className="token"; s.textContent=w;
+    s.onclick=()=>answerHunt(clean,s);
+    area.appendChild(s);
+  });
+  session.started=performance.now();
+}
+function answerHunt(clean, el){
+  if($("#nextHunt").classList.contains("hidden")===false) return;
+  const q=session.qs[session.i];
+  const rt=(performance.now()-session.started)/1000;
+  const ok=clean.toLowerCase()===q.wrong.toLowerCase();
+  session.rts.push(rt);
+  if(ok){session.good++;session.runStreak++;session.bestRun=Math.max(session.bestRun,session.runStreak)}
+  else session.runStreak=0;
+  record(q.pair,ok,rt);
+  $$("#sentenceArea .token").forEach(x=>x.style.pointerEvents="none");
+  const f=$("#huntFeedback"); f.classList.remove("hidden");
+  if(ok){
+    el.classList.add("correct");
+    f.classList.add("goodf");
+    f.innerHTML=`✓ Megvan. <b>${q.wrong}</b> → <b>${q.correct}</b>`;
+  }else{
+    el.classList.add("wrong");
+    const target=$$("#sentenceArea .token").find(x=>x.textContent.replace(/[.,!?;:]/g,"").toLowerCase()===q.wrong.toLowerCase());
+    if(target)target.classList.add("correct");
+    f.classList.add("badf");
+    f.innerHTML=`✗ A hibás szó: <b>${q.wrong}</b> → <b>${q.correct}</b>`;
+  }
+  $("#nextHunt").classList.remove("hidden");
+  $("#nextHunt").textContent=session.i===session.qs.length-1?"Eredmény":"Következő →";
+}
+$("#nextHunt").onclick=()=>{
+  if(session.i>=session.qs.length-1) finishSession();
+  else{session.i++;showHunt();}
+};
+$("#huntExit").onclick=()=>switchScreen("home");
+
+function finishSession(){
+  markTrainingDay();
+  $("#sprintBar").style.width="100%";
+  $("#huntBar").style.width="100%";
+  const n=session.qs.length, good=session.good;
+  const acc=Math.round(good/n*100);
+  const avg=session.rts.reduce((a,b)=>a+b,0)/Math.max(1,session.rts.length);
+  $("#resultScore").textContent=good+"/"+n;
+  $("#resultAcc").textContent=acc+"%";
+  $("#resultRt").textContent=avg.toFixed(1)+" mp";
+  $("#resultIcon").textContent=acc>=90?"🏆":acc>=75?"🎯":"📈";
+  $("#resultTitle").textContent=acc>=90?"Nagyon stabil kör":acc>=75?"Jó menet":"Ez még edzés alatt van";
+  $("#resultMsg").textContent=
+    acc>=90 ? "Most érdemes gyorsítani vagy vegyes hangpárokkal próbálkozni." :
+    acc>=75 ? "Még néhány hasonló körrel jól automatizálható." :
+    "A pontosság fontosabb a sebességnél. Érdemes ugyanazzal a hangpárral újra próbálni.";
+  switchScreen("result");
+}
+$("#resultHome").onclick=()=>switchScreen("home");
+
+$("#startSprint").onclick=buildSprint;
+$("#startHunt").onclick=buildHunt;
+
+function renderHome(){
+  updateDayStreak();
+  const t=todayKey(), td=data.days[t]||{q:0,correct:0};
+  $("#homeToday").textContent=td.q;
+  $("#homeAcc").textContent=td.q?Math.round(td.correct/td.q*100)+"%":"–";
+  $("#homeBest").textContent=data.bestStreak||0;
+  $("#streakBadge").textContent="🔥 "+(data.currentStreak||0)+" nap";
+
+  let days=0;
+  const d=new Date();
+  for(let i=0;i<7;i++){
+    const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    if(data.days[k]?.q>=5)days++;
+    d.setDate(d.getDate()-1);
+  }
+  $("#weeklyBar").style.width=Math.min(100,days/5*100)+"%";
+  $("#weeklyText").textContent=days+" / 5 edzésnap az elmúlt 7 napban";
+}
+function renderStats(){
+  updateDayStreak();
+  $("#totalQ").textContent=data.total;
+  $("#totalAcc").textContent=data.total?Math.round(data.correct/data.total*100)+"%":"–";
+  $("#avgRt").textContent=data.total?(data.rtSum/data.total).toFixed(1)+" mp":"–";
+  const box=$("#pairStats");box.innerHTML="";
+  Object.keys(PAIRS).forEach(p=>{
+    const s=data.pair[p]||{total:0,correct:0,rtSum:0};
+    const acc=s.total?Math.round(s.correct/s.total*100):0;
+    const div=document.createElement("div");
+    div.style.margin="12px 0";
+    div.innerHTML=`
+      <div class="row space"><b>${pairLabel(p)}</b><span class="muted">${s.total?acc+"%":"nincs adat"} · ${s.total} válasz</span></div>
+      <div class="progress" style="margin-top:6px"><div style="width:${acc}%"></div></div>`;
+    box.appendChild(div);
+  });
+}
+$("#resetStats").onclick=()=>{
+  if(confirm("Biztosan törlöd az összes eredményt?")){
+    localStorage.removeItem(storeKey); data=loadData(); renderStats(); renderHome();
+  }
+};
+
+renderHome();
+</script>
+</body>
+</html>
